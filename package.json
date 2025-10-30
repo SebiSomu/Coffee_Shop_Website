@@ -2,7 +2,7 @@
   "name": "Coffee_Shop_Website",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "Shop_Functionalities.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
