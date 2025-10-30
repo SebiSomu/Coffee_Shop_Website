@@ -1,0 +1,19 @@
+body {
+    background-color: navajowhite;
+}
+
+#title h1 {
+    background-color: navajowhite;
+    color: white;
+    font-size: 85px;
+    text-align: center;
+    font-family: 'Cormorant Garamond', sans-serif;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2),
+    0 0 10px rgba(255,255,255,0.2);
+    padding: 20px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    -webkit-text-stroke: 1px rgba(0,0,0,0.1);
+}
+
