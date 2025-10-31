@@ -2,10 +2,10 @@ body {
     background-color: navajowhite;
 }
 
-#title h1 {
+#title {
     background-color: navajowhite;
     color: white;
-    font-size: 85px;
+    font-size: 50px;
     text-align: center;
     font-family: 'Cormorant Garamond', sans-serif;
     text-transform: uppercase;
@@ -15,5 +15,25 @@ body {
     letter-spacing: 2px;
     font-weight: 700;
     -webkit-text-stroke: 1px rgba(0,0,0,0.1);
+}
+
+#title h2 {
+    font-size: 37px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    font-family: 'Playfair Display', serif;
+}
+
+#story {
+    color: saddlebrown;
+    padding: 40px;
+    margin-left: 15px;
+    font-family: 'Cormorant Garamond', sans-serif;
+    font-size: 18px;
+}
+
+#story h3 {
+    text-decoration: underline;
+    text-decoration-color: saddlebrown;
+    font-size: 25px;
 }
 
