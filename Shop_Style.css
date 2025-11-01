@@ -79,4 +79,50 @@ body {
     text-transform: uppercase;
 }
 
+#menu-section {
+    color: saddlebrown;
+    padding: 40px;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+#menu-section h2 {
+    text-align: center;
+    font-size: 35px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    border-bottom: 2px solid saddlebrown;
+    display: inline-block;
+}
+
+.coffee-item {
+    margin-bottom: 25px;
+    border-bottom: 1px solid rgba(139,69,19,0.2);
+    padding-bottom: 15px;
+}
+
+.coffee-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-decoration: underline solid rgba(139,69,19,0.2);
+}
+
+.coffee-item h3 {
+    font-size: 24px;
+    color: #4b2e05;
+    margin-bottom: 8px;
+}
+
+.price {
+    font-size: 18px;
+    color: #8b4513;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+}
+
+.coffee-item p {
+    font-size: 17px;
+    color: #5e3c15;
+    line-height: 1.5;
+}
 

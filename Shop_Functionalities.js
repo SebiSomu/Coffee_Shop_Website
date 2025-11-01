@@ -1,5 +1,3 @@
-console.log("JS merge");
-
 document.getElementById("menu")?.addEventListener("click", function() {
     window.location.href = "Menu.html";
 });
