@@ -148,3 +148,139 @@ body {
     color: white;
     text-decoration: underline;
 }
+
+.add-to-cart {
+    background-color: transparent;
+    color: saddlebrown;
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    padding: 8px 20px;
+    border: 2px solid saddlebrown;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.add-to-cart:hover {
+    background-color: saddlebrown;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+.add-to-cart:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#order-section {
+    color: saddlebrown;
+    padding: 40px;
+    font-family: 'Cormorant Garamond', serif;
+}
+
+#order-section h2 {
+    text-align: center;
+    font-size: 35px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    border-bottom: 2px solid saddlebrown;
+    display: inline-block;
+}
+
+.cart-item {
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(139,69,19,0.2);
+    padding-bottom: 8px;
+}
+
+#total {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 20px;
+    text-align: right;
+}
+
+#back-to-menu {
+    background-color: transparent;
+    color: saddlebrown;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    padding: 10px 25px;
+    border: 2px solid saddlebrown;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 30px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    display: block;
+    margin-left: auto;
+}
+
+#back-to-menu:hover {
+    background-color: saddlebrown;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+#back-to-menu:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#order {
+    background-color: transparent;
+    color: saddlebrown;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    padding: 12px 28px;
+    border: 2px solid saddlebrown;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 40px 0 60px 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+#order:hover {
+    background-color: saddlebrown;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+}
+
+#order:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.remove-from-cart {
+    background-color: transparent;
+    color: #d9534f; /* roșu cald pentru warning/ștergere */
+    border: 1px solid #d9534f;
+    border-radius: 15px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+}
+
+.remove-from-cart:hover {
+    background-color: #d9534f;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transform: translateY(-1px);
+}
+
+.remove-from-cart:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
