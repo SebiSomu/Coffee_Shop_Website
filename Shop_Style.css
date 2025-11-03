@@ -3,24 +3,56 @@ body {
 }
 
 #title {
+    display: flex;
+    justify-content: center;   /* centrăm imaginea + text pe orizontală */
+    align-items: center;       /* centrăm vertical imagine + text */
     background-color: navajowhite;
     color: white;
+    border: 3px solid #8B4513;
     font-size: 50px;
-    text-align: center;
     font-family: 'Cormorant Garamond', sans-serif;
     text-transform: uppercase;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.2),
-    0 0 10px rgba(255,255,255,0.2);
+    text-shadow:
+            1px 1px 0 #8B4513,
+            -1px 1px 0 #8B4513,
+            1px -1px 0 #8B4513,
+            -1px -1px 0 #8B4513,
+            0 1px 0 #8B4513,
+            0 -1px 0 #8B4513,
+            1px 0 0 #8B4513,
+            -1px 0 0 #8B4513;
     padding: 20px;
     letter-spacing: 2px;
     font-weight: 700;
     -webkit-text-stroke: 1px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    gap: 20px;
+    text-align: center;
+    margin-left: -250px;
+}
+
+#title-text {
+    display: flex;
+    flex-direction: column;  /* titlu + subtitlu unul sub altul */
+    justify-content: center; /* centrarea verticală a textului față de imagine */
+    align-items: center;     /* centrarea textului orizontal */
+}
+
+#title h1 {
+    margin: 0;
 }
 
 #title h2 {
     font-size: 37px;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     font-family: 'Playfair Display', serif;
+    margin: 0;
+}
+
+#title-img {
+    width: 275px;
+    height: auto;
+    border-radius: 10px;
 }
 
 #story {
