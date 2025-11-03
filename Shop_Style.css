@@ -4,8 +4,8 @@ body {
 
 #title {
     display: flex;
-    justify-content: center;   /* centrăm imaginea + text pe orizontală */
-    align-items: center;       /* centrăm vertical imagine + text */
+    justify-content: center;
+    align-items: center;
     background-color: navajowhite;
     color: white;
     border: 3px solid #8B4513;
@@ -33,9 +33,9 @@ body {
 
 #title-text {
     display: flex;
-    flex-direction: column;  /* titlu + subtitlu unul sub altul */
-    justify-content: center; /* centrarea verticală a textului față de imagine */
-    align-items: center;     /* centrarea textului orizontal */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #title h1 {
@@ -57,16 +57,31 @@ body {
 
 #story {
     color: saddlebrown;
-    padding: 40px;
-    margin-left: 15px;
+    padding: 150px;
     font-family: 'Cormorant Garamond', sans-serif;
     font-size: 18px;
+    width: 100%;
+    max-width: 1200px;
+    margin: auto;
+    box-sizing: border-box;
 }
 
 #story h3 {
     text-decoration: underline;
     text-decoration-color: saddlebrown;
     font-size: 25px;
+}
+
+#coffee_prep, #coffeeTable {
+    width: 100%;
+    max-width: 1200px;      /* nu devine prea lată pe desktop */
+    height: auto;
+    max-height: 600px;      /* înălțime elegantă */
+    object-fit: cover;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    margin: 20px auto;      /* centru și spațiu între imagini */
+    transition: transform 0.3s ease;
 }
 
 #menu {
