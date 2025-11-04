@@ -66,6 +66,11 @@ body {
     box-sizing: border-box;
 }
 
+.story-text {
+    padding: 40px 0;
+    line-height: 1.6;
+}
+
 #story h3 {
     text-decoration: underline;
     text-decoration-color: saddlebrown;
@@ -74,14 +79,28 @@ body {
 
 #coffee_prep, #coffeeTable {
     width: 100%;
-    max-width: 1200px;      /* nu devine prea lată pe desktop */
+    max-width: 1200px;
     height: auto;
-    max-height: 600px;      /* înălțime elegantă */
+    max-height: 600px;
     object-fit: cover;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-    margin: 20px auto;      /* centru și spațiu între imagini */
+    margin: 20px auto;
     transition: transform 0.3s ease;
+}
+
+#goodVibes {
+    text-align: center;
+    max-width: 900px;
+    margin: 60px auto;
+    padding: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: saddlebrown;
+    line-height: 1.6;
+    background-color: #f8f3ee;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
 #menu {
@@ -310,7 +329,7 @@ body {
 
 .remove-from-cart {
     background-color: transparent;
-    color: #d9534f; /* roșu cald pentru warning/ștergere */
+    color: #d9534f;
     border: 1px solid #d9534f;
     border-radius: 15px;
     padding: 4px 8px;
@@ -356,7 +375,7 @@ body {
 #topNav ul {
     list-style: none;
     display: flex;
-    gap: 10px;             /* spațiu între butoane */
+    gap: 10px;
     margin: 0;
     padding: 0;
 }
@@ -365,7 +384,7 @@ body {
     text-decoration: none;
     color: saddlebrown;
     font-size: 18px;
-    padding: 6px 10px;     /* butoane compacte */
+    padding: 6px 10px;
     border-radius: 6px;
     transition: background 0.3s, color 0.3s;
     white-space: nowrap;
@@ -374,6 +393,11 @@ body {
 #topNav ul li a:hover {
     color: #fff;
     background-color: #4b2e05;
+}
+
+body#index-page #menu,
+body#index-page #order {
+    display: none;
 }
 
 
