@@ -1,22 +1,33 @@
 document.addEventListener("DOMContentLoaded", async function() {
-    // === FOOTER LOADING ===
     const footerPlaceholder = document.getElementById("footer-placeholder");
     if (footerPlaceholder) {
         try {
             const response = await fetch("footer.html");
-            const data = await response.text();
-            footerPlaceholder.innerHTML = data;
+            footerPlaceholder.innerHTML = await response.text();
         } catch (err) {
             console.error("Error during footer loading:", err);
         }
     }
 
-    // === GLOBAL STATE ===
+    function showCustomAlert(message) {
+        const alertBox = document.createElement("div");
+        alertBox.classList.add("custom-alert");
+        alertBox.textContent = message;
+
+        document.body.appendChild(alertBox);
+
+        setTimeout(() => alertBox.classList.add("visible"), 10);
+
+        setTimeout(() => {
+            alertBox.classList.remove("visible");
+            setTimeout(() => alertBox.remove(), 400);
+        }, 3000);
+    }
+
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const cartChannel = new BroadcastChannel("cart_channel");
     const ordersChannel = new BroadcastChannel("orders_channel");
 
-    // === NAVIGATION BUTTONS (using data-target) ===
     document.querySelectorAll(".base_button").forEach(button => {
         const target = button.dataset.target;
         if (target) {
@@ -26,7 +37,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
-    // === ADD TO CART FUNCTIONALITY ===
     document.querySelectorAll(".add-to-cart")?.forEach((button) => {
         button.addEventListener("click", () => {
             const coffeeItem = button.closest(".coffee-item");
@@ -37,11 +47,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             cart.push({ name, price });
             localStorage.setItem("cart", JSON.stringify(cart));
             cartChannel.postMessage(cart);
-            alert(`${name} a fost adăugat în coș!`);
+
+            showCustomAlert(`${name} was added to your cart.`);
         });
     });
 
-    // === CART PAGE FUNCTIONALITY ===
     const cartItemsContainer = document.getElementById("cart-items");
     const totalElement = document.getElementById("total");
 
@@ -61,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 itemDiv.innerHTML = `
                     <strong>${item.name}</strong> - ${item.price} RON
                     <button class="remove-from-cart base_button" data-index="${index}">Remove</button>
-                `;
+                 `;
                 cartItemsContainer.appendChild(itemDiv);
                 total += item.price;
             });
@@ -71,10 +81,12 @@ document.addEventListener("DOMContentLoaded", async function() {
             document.querySelectorAll(".remove-from-cart").forEach(button => {
                 button.addEventListener("click", () => {
                     const idx = button.dataset.index;
+                    const removed = cart[idx].name;
                     cart.splice(idx, 1);
                     localStorage.setItem("cart", JSON.stringify(cart));
                     cartChannel.postMessage(cart);
                     renderCart();
+                    showCustomAlert(`${removed} was removed from your cart.`);
                 });
             });
         }
@@ -86,12 +98,11 @@ document.addEventListener("DOMContentLoaded", async function() {
         };
     }
 
-    // === ORDER SUBMISSION ===
     const sendOrderButton = document.getElementById("send-order");
     if (sendOrderButton) {
         sendOrderButton.addEventListener("click", () => {
             if (cart.length === 0) {
-                alert("Your cart is empty!");
+                showCustomAlert("Your cart is empty!");
                 return;
             }
 
@@ -106,20 +117,17 @@ document.addEventListener("DOMContentLoaded", async function() {
             history.push(order);
             localStorage.setItem("orders_history", JSON.stringify(history));
 
-            // Update all open tabs / pages
             ordersChannel.postMessage(history);
 
-            // Clear cart
             cart = [];
             localStorage.setItem("cart", JSON.stringify(cart));
             cartChannel.postMessage(cart);
 
-            alert("Order sent successfully!");
-            window.location.href = "Orders_History.html";
+            showCustomAlert("Order sent successfully!");
+            setTimeout(() => window.location.href = "Orders_History.html", 1200);
         });
     }
 
-    // === ORDERS HISTORY PAGE ===
     const ordersList = document.getElementById("orders-list");
     if (ordersList) {
         function renderHistory() {
@@ -157,8 +165,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
 
         renderHistory();
-
-        // Ascultă actualizările în timp real
         ordersChannel.onmessage = () => {
             renderHistory();
         };
