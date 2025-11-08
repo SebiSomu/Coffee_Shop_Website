@@ -170,3 +170,14 @@ document.addEventListener("DOMContentLoaded", async function() {
         };
     }
 });
+
+const specialMessage = document.getElementById("goodVibes");
+const initialText = specialMessage.textContent;
+specialMessage.addEventListener("mousedown", () => {
+    specialMessage.textContent = "Take a moment to slow down.\n" +
+        "    Feel the aroma, hear the quiet hum of the café, and let the world pause for a sip.\n" +
+        "    Because at Coffee Time, every cup is a reminder that the little things make life beautiful. ☕✨";
+})
+specialMessage.addEventListener("mouseup", () => {
+    specialMessage.textContent = initialText;
+})

@@ -101,6 +101,12 @@ body {
     background-color: #f8f3ee;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    width: 40%;
+    transition: width 3s;
+}
+
+#goodVibes:active {
+    width: 100%;
 }
 
 .base_button {
