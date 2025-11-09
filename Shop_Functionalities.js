@@ -181,3 +181,15 @@ specialMessage.addEventListener("mousedown", () => {
 specialMessage.addEventListener("mouseup", () => {
     specialMessage.textContent = initialText;
 })
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting) {
+            specialMessage.classList.add("animate");
+            observer.unobserve(entry.target);
+        }
+    });
+}, {
+    threshold: 0.5,
+});
+
+observer.observe(specialMessage);

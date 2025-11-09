@@ -111,6 +111,19 @@ body {
     transition: width 3s;
 }
 
+#goodVibes.animate {
+    animation: shadow-inset-center 1s forwards;
+}
+
+@keyframes shadow-inset-center {
+    0% {
+        box-shadow: inset 0 0 0 0 #C76338;
+    }
+    100% {
+        box-shadow: inset 0 0 14px 0 #C76338;
+    }
+}
+
 #goodVibes:active {
     width: 100%;
 }
@@ -420,7 +433,7 @@ body#index-page .base_button {
 
 #banner {
     width: 100%;
-    overflow: hidden; /* ascunde orice depășire */
+    overflow: hidden;
     margin: 0;
     max-height: 275px;
 }
