@@ -93,9 +93,42 @@ body {
 }
 
 #story h3 {
-    text-decoration: underline;
-    text-decoration-color: saddlebrown;
-    font-size: 25px;
+    font-size: 42px;
+    color: #3D2012;
+    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 2px;
+    text-align: center;
+    position: relative;
+    margin-bottom: 60px;
+    font-weight: 700;
+}
+
+#story h3::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #C76338;
+    border-radius: 2px;
+}
+
+#story h3.animate {
+    animation: fadeInTitle 1.2s ease-out forwards;
+}
+
+@keyframes fadeInTitle {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 #coffee_prep, #coffeeTable {
