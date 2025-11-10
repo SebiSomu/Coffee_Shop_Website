@@ -193,14 +193,13 @@ const observer = new IntersectionObserver((entries) => {
 });
 observer.observe(specialMessage);
 
-const storyTitle = document.querySelector("#story h3");
-
+const storyElements = document.querySelectorAll("#story h3, .story-text");
 const observer2 = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
-            storyTitle.classList.add("animate");
+            entry.target.classList.add("animate");
             observer2.unobserve(entry.target);
         }
     });
-}, { threshold: 0.5 });
-observer2.observe(storyTitle);
+}, { threshold: 0.2 });
+storyElements.forEach(el => observer2.observe(el));
