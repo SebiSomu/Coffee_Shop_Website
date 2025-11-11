@@ -153,14 +153,54 @@ body {
 
 #coffee_prep, #coffeeTable {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1000px;
     height: auto;
-    max-height: 600px;
+    max-height: 400px;
     object-fit: cover;
     border-radius: 15px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
     margin: 20px auto;
     transition: transform 0.3s ease;
+}
+
+#image-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#image-container img {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+#overlay-button {
+    position: absolute;
+    bottom: 38px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    padding: 12px 30px;
+    border: 2px solid #fff;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#overlay-button:hover {
+    background-color: rgba(139, 69, 19, 0.8);
+    border-color: saddlebrown;
+    color: white;
+    transform: translateX(-50%) scale(1.05);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
 }
 
 #goodVibes {

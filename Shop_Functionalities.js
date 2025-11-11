@@ -28,13 +28,10 @@ document.addEventListener("DOMContentLoaded", async function() {
     const cartChannel = new BroadcastChannel("cart_channel");
     const ordersChannel = new BroadcastChannel("orders_channel");
 
-    document.querySelectorAll(".base_button").forEach(button => {
-        const target = button.dataset.target;
-        if (target) {
-            button.addEventListener("click", () => {
-                window.location.href = target;
-            });
-        }
+    document.querySelectorAll("button[data-target]").forEach(button => {
+        button.addEventListener("click", () => {
+            window.location.href = button.dataset.target;
+        });
     });
 
     document.querySelectorAll(".add-to-cart")?.forEach((button) => {
