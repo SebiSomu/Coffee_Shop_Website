@@ -15,7 +15,7 @@ body {
     background-color: #3D2012;
     color: white;
     border: 3px solid #3D2012;
-    font-size: 55px;
+    font-size: 52px;
     font-family: 'Cormorant Garamond', sans-serif;
     text-transform: uppercase;
     text-shadow:
@@ -55,7 +55,7 @@ body {
 }
 
 #title-img {
-    width: 275px;
+    width: 250px;
     height: auto;
     border-radius: 10px;
 }
@@ -80,7 +80,7 @@ body {
     color: saddlebrown;
     padding: 200px;
     font-family: 'Cormorant Garamond', sans-serif;
-    font-size: 18px;
+    font-size: 22px;
     width: 100%;
     max-width: 1200px;
     margin: auto;
@@ -90,6 +90,11 @@ body {
 .story-text {
     padding: 40px 0;
     line-height: 1.6;
+}
+
+#check {
+    display: block;
+    margin-top: 250px;
 }
 
 #story h3 {
@@ -161,7 +166,7 @@ body {
 #goodVibes {
     text-align: center;
     max-width: 900px;
-    margin: 60px auto;
+    margin: auto;
     padding: 20px;
     font-family: 'Cormorant Garamond', serif;
     font-size: 20px;
