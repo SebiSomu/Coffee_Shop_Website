@@ -40,8 +40,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             const name = coffeeItem.querySelector("h3").innerText;
             const priceText = coffeeItem.querySelector(".price").innerText;
             const price = parseFloat(priceText.replace(" RON", ""));
+            const gramsElement = coffeeItem.querySelector(".coffee-grams");
+            const grams = gramsElement ? gramsElement.innerText : "";
 
-            cart.push({ name, price });
+            cart.push({ name, price, grams});
             localStorage.setItem("cart", JSON.stringify(cart));
             cartChannel.postMessage(cart);
 
@@ -66,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const itemDiv = document.createElement("div");
                 itemDiv.classList.add("cart-item");
                 itemDiv.innerHTML = `
-                    <strong>${item.name}</strong> - ${item.price} RON
+                    <strong>${item.name}</strong> ${item.grams} - ${item.price} RON
                     <button class="remove-from-cart base_button" data-index="${index}">Remove</button>
                  `;
                 cartItemsContainer.appendChild(itemDiv);
@@ -146,7 +148,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const itemsList = document.createElement("ul");
                 order.items.forEach(item => {
                     const li = document.createElement("li");
-                    li.textContent = `${item.name} - ${item.price} RON`;
+                    li.textContent = `${item.name} ${item.grams} - ${item.price} RON`;
                     itemsList.appendChild(li);
                 });
 

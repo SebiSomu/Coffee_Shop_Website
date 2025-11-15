@@ -90,6 +90,7 @@ body {
 .story-text {
     padding: 40px 0;
     line-height: 1.6;
+    text-align: center;
 }
 
 #check {
@@ -282,6 +283,14 @@ body {
     margin-bottom: 25px;
     border-bottom: 1px solid rgba(139,69,19,0.2);
     padding-bottom: 15px;
+}
+
+.coffee-grams {
+    font-size: 18px;
+    color: #5e3c15;
+    line-height: 1.5;
+    font-family: 'Cormorant Garamond', serif;
+    margin: -8px 0 8px 0;
 }
 
 .coffee-header {
