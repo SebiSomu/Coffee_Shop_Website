@@ -40,8 +40,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
 
     document.querySelectorAll(".quantity-controls").forEach((controls) => {
-        const minusBtn = controls.querySelector(".minus");
-        const plusBtn = controls.querySelector(".plus");
+        const minusBtn = controls.querySelector(".decrease");
+        const plusBtn = controls.querySelector(".increase");
         const quantitySpan = controls.querySelector(".quantity");
 
         minusBtn.addEventListener("click", () => {
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 showCustomAlert(`${name} quantity increased to ${existingItem.quantity}`);
             } else {
                 cart.push({ name, price, grams, quantity });
-                showCustomAlert(`${name} was added to your cart.`);
+                showCustomAlert(`${name} (x${quantity}) was added to your cart.`);
             }
 
             localStorage.setItem("cart", JSON.stringify(cart));
@@ -117,9 +117,9 @@ document.addEventListener("DOMContentLoaded", async function() {
                         <strong>${item.name}</strong> ${item.grams} - ${item.price} RON
                     </div>
                     <div class="cart-item-controls">
-                        <button class="quantity-btn decrease-qty" data-index="${index}">−</button>
+                        <button class="qty-btn decrease" data-index="${index}">−</button>
                         <span class="quantity-display">${item.quantity}</span>
-                        <button class="quantity-btn increase-qty" data-index="${index}">+</button>
+                        <button class="qty-btn increase" data-index="${index}">+</button>
                         <span class="item-total">${itemTotal} RON</span>
                         <button class="remove-from-cart" data-index="${index}">✕</button>
                     </div>
@@ -129,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             totalElement.innerText = `Total: ${total} RON`;
 
-            document.querySelectorAll(".increase-qty").forEach(button => {
+            document.querySelectorAll(".increase").forEach(button => {
                 button.addEventListener("click", () => {
                     const idx = parseInt(button.dataset.index);
                     cart[idx].quantity += 1;
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 });
             });
 
-            document.querySelectorAll(".decrease-qty").forEach(button => {
+            document.querySelectorAll(".decrease").forEach(button => {
                 button.addEventListener("click", () => {
                     const idx = parseInt(button.dataset.index);
                     if (cart[idx].quantity > 1) {
