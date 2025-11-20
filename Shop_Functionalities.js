@@ -3,7 +3,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (footerPlaceholder) {
         try {
             const response = await fetch("footer.html");
-            footerPlaceholder.innerHTML = await response.text();
+            if (response.ok) {
+                footerPlaceholder.innerHTML = await response.text();
+            } else {
+                console.error("Footer file not found");
+            }
         } catch (err) {
             console.error("Error during footer loading:", err);
         }
@@ -34,6 +38,24 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     });
 
+    document.querySelectorAll(".quantity-controls").forEach((controls) => {
+        const minusBtn = controls.querySelector(".minus");
+        const plusBtn = controls.querySelector(".plus");
+        const quantitySpan = controls.querySelector(".quantity");
+
+        minusBtn.addEventListener("click", () => {
+            let currentQty = parseInt(quantitySpan.textContent);
+            if (currentQty > 1) {
+                quantitySpan.textContent = currentQty - 1;
+            }
+        });
+
+        plusBtn.addEventListener("click", () => {
+            let currentQty = parseInt(quantitySpan.textContent);
+            quantitySpan.textContent = currentQty + 1;
+        });
+    });
+
     document.querySelectorAll(".add-to-cart")?.forEach((button) => {
         button.addEventListener("click", () => {
             const coffeeItem = button.closest(".coffee-item");
@@ -42,12 +64,22 @@ document.addEventListener("DOMContentLoaded", async function() {
             const price = parseFloat(priceText.replace(" RON", ""));
             const gramsElement = coffeeItem.querySelector(".coffee-grams");
             const grams = gramsElement ? gramsElement.innerText : "";
+            const quantity = parseInt(coffeeItem.querySelector(".quantity").textContent);
 
-            cart.push({ name, price, grams});
+            const existingItem = cart.find(item => item.name === name);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+                showCustomAlert(`${name} quantity increased to ${existingItem.quantity}`);
+            } else {
+                cart.push({ name, price, grams, quantity });
+                showCustomAlert(`${name} was added to your cart.`);
+            }
+
             localStorage.setItem("cart", JSON.stringify(cart));
             cartChannel.postMessage(cart);
 
-            showCustomAlert(`${name} was added to your cart.`);
+            coffeeItem.querySelector(".quantity").textContent = "1";
         });
     });
 
@@ -67,19 +99,55 @@ document.addEventListener("DOMContentLoaded", async function() {
             cart.forEach((item, index) => {
                 const itemDiv = document.createElement("div");
                 itemDiv.classList.add("cart-item");
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+
                 itemDiv.innerHTML = `
-                    <strong>${item.name}</strong> ${item.grams} - ${item.price} RON
-                    <button class="remove-from-cart base_button" data-index="${index}">Remove</button>
-                 `;
+                    <div class="cart-item-info">
+                        <strong>${item.name}</strong> ${item.grams} - ${item.price} RON
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="quantity-btn decrease-qty" data-index="${index}">−</button>
+                        <span class="quantity-display">${item.quantity}</span>
+                        <button class="quantity-btn increase-qty" data-index="${index}">+</button>
+                        <span class="item-total">${itemTotal} RON</span>
+                        <button class="remove-from-cart" data-index="${index}">✕</button>
+                    </div>
+                `;
                 cartItemsContainer.appendChild(itemDiv);
-                total += item.price;
             });
 
             totalElement.innerText = `Total: ${total} RON`;
 
+            document.querySelectorAll(".increase-qty").forEach(button => {
+                button.addEventListener("click", () => {
+                    const idx = parseInt(button.dataset.index);
+                    cart[idx].quantity += 1;
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    cartChannel.postMessage(cart);
+                    renderCart();
+                });
+            });
+
+            document.querySelectorAll(".decrease-qty").forEach(button => {
+                button.addEventListener("click", () => {
+                    const idx = parseInt(button.dataset.index);
+                    if (cart[idx].quantity > 1) {
+                        cart[idx].quantity -= 1;
+                    } else {
+                        const removed = cart[idx].name;
+                        cart.splice(idx, 1);
+                        showCustomAlert(`${removed} was removed from your cart.`);
+                    }
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    cartChannel.postMessage(cart);
+                    renderCart();
+                });
+            });
+
             document.querySelectorAll(".remove-from-cart").forEach(button => {
                 button.addEventListener("click", () => {
-                    const idx = button.dataset.index;
+                    const idx = parseInt(button.dataset.index);
                     const removed = cart[idx].name;
                     cart.splice(idx, 1);
                     localStorage.setItem("cart", JSON.stringify(cart));
@@ -106,9 +174,22 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
 
             const now = new Date();
+
+            let totalAmount = 0;
+            const orderItems = cart.map(item => {
+                totalAmount += item.price * item.quantity;
+                return {
+                    name: item.name,
+                    grams: item.grams,
+                    price: item.price,
+                    quantity: item.quantity,
+                    subtotal: item.price * item.quantity
+                };
+            });
+
             const order = {
-                items: cart,
-                total: cart.reduce((sum, item) => sum + item.price, 0),
+                items: orderItems,
+                total: totalAmount,
                 time: now.toLocaleString()
             };
 
@@ -148,7 +229,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const itemsList = document.createElement("ul");
                 order.items.forEach(item => {
                     const li = document.createElement("li");
-                    li.textContent = `${item.name} ${item.grams} - ${item.price} RON`;
+                    if (item.quantity > 1) {
+                        li.textContent = `${item.name} ${item.grams} × ${item.quantity} - ${item.subtotal} RON`;
+                    } else {
+                        li.textContent = `${item.name} ${item.grams} - ${item.price} RON`;
+                    }
                     itemsList.appendChild(li);
                 });
 
@@ -171,26 +256,28 @@ document.addEventListener("DOMContentLoaded", async function() {
 });
 
 const specialMessage = document.getElementById("goodVibes");
-const initialText = specialMessage.textContent;
-specialMessage.addEventListener("mousedown", () => {
-    specialMessage.textContent = "Take a moment to slow down.\n" +
-        "    Feel the aroma, hear the quiet hum of the café, and let the world pause for a sip.\n" +
-        "    Because at Coffee Time, every cup is a reminder that the little things make life beautiful. ☕✨";
-})
-specialMessage.addEventListener("mouseup", () => {
-    specialMessage.textContent = initialText;
-})
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if(entry.isIntersecting) {
-            specialMessage.classList.add("animate");
-            observer.unobserve(entry.target);
-        }
+if (specialMessage) {
+    const initialText = specialMessage.textContent;
+    specialMessage.addEventListener("mousedown", () => {
+        specialMessage.textContent = "Take a moment to slow down.\n" +
+            "    Feel the aroma, hear the quiet hum of the café, and let the world pause for a sip.\n" +
+            "    Because at Coffee Time, every cup is a reminder that the little things make life beautiful. ☕✨";
     });
-}, {
-    threshold: 1,
-});
-observer.observe(specialMessage);
+    specialMessage.addEventListener("mouseup", () => {
+        specialMessage.textContent = initialText;
+    });
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting) {
+                specialMessage.classList.add("animate");
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 1,
+    });
+    observer.observe(specialMessage);
+}
 
 const storyElements = document.querySelectorAll("#story h3, .story-text");
 const observer2 = new IntersectionObserver((entries) => {
