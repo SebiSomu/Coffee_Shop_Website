@@ -368,6 +368,10 @@ body.history-page #footer {
     width: 100%;
 }
 
+body.history-page .base_button {
+    margin-bottom: 100px;
+}
+
 .add-to-cart {
     background-color: transparent;
     color: saddlebrown;

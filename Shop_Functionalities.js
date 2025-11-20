@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function() {
+    //localStorage.removeItem("orders_history");
     const footerPlaceholder = document.getElementById("footer-placeholder");
     if (footerPlaceholder) {
         try {
@@ -229,11 +230,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const itemsList = document.createElement("ul");
                 order.items.forEach(item => {
                     const li = document.createElement("li");
-                    if (item.quantity > 1) {
-                        li.textContent = `${item.name} ${item.grams} × ${item.quantity} - ${item.subtotal} RON`;
-                    } else {
-                        li.textContent = `${item.name} ${item.grams} - ${item.price} RON`;
-                    }
+                    li.textContent = `${item.name} ${item.grams} × ${item.quantity}  -  ${item.subtotal} RON`;
                     itemsList.appendChild(li);
                 });
 
