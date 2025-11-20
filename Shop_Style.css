@@ -12,6 +12,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-left: auto;
+    margin-right: auto;
     background-color: #3D2012;
     color: white;
     border: 3px solid #3D2012;
@@ -33,7 +35,6 @@ body {
     -webkit-text-stroke: 1px rgba(0,0,0,0.1);
     gap: 20px;
     text-align: center;
-    margin-left: -250px;
 }
 
 #title-text {
@@ -78,7 +79,7 @@ body {
 
 #story {
     color: saddlebrown;
-    padding: 200px;
+    padding: 200px 200px 40px 200px;
     font-family: 'Cormorant Garamond', sans-serif;
     font-size: 22px;
     width: 100%;
@@ -95,7 +96,8 @@ body {
 
 #check {
     display: block;
-    margin-top: 250px;
+    margin-top: 0;
+    padding-top: 250px;
 }
 
 #story h3 {
