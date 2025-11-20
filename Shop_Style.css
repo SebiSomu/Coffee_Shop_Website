@@ -266,6 +266,21 @@ body {
     box-shadow: 0 2px 6px rgba(0,0,0,0.15);
 }
 
+#send-order:disabled {
+    background-color: #d3d3d3;
+    color: #999;
+    border-color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#send-order:disabled:hover {
+    background-color: #d3d3d3;
+    color: #999;
+    transform: none;
+    box-shadow: none;
+}
+
 #menu-section {
     color: saddlebrown;
     padding: 40px;
@@ -275,7 +290,26 @@ body {
 .coffee-item {
     margin-bottom: 25px;
     border-bottom: 1px solid rgba(139,69,19,0.2);
-    padding-bottom: 15px;
+    padding: 20px;
+    border-radius: 12px;
+    transition: all 0.4s ease;
+    background-color: transparent;
+}
+
+.coffee-item:hover {
+    background-color: rgba(139, 69, 19, 0.1);
+    box-shadow: 0 8px 20px rgba(139, 69, 19, 0.15);
+    transform: translateY(-5px);
+    border-bottom: 1px solid rgba(139,69,19,0.4);
+}
+
+.coffee-item:hover h3 {
+    color: #733910;
+}
+
+.coffee-item:hover .price {
+    color: #C76338;
+    transform: scale(1.25);
 }
 
 .coffee-grams {

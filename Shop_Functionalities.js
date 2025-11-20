@@ -90,10 +90,19 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (cartItemsContainer) {
         function renderCart() {
             cartItemsContainer.innerHTML = "";
+            const sendOrderBtn = document.getElementById("send-order");
+
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
                 totalElement.innerText = "";
+                if (sendOrderBtn) {
+                    sendOrderBtn.disabled = true;
+                }
                 return;
+            }
+
+            if (sendOrderBtn) {
+                sendOrderBtn.disabled = false;
             }
 
             let total = 0;
