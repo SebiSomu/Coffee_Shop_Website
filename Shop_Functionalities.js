@@ -175,6 +175,22 @@ document.addEventListener("DOMContentLoaded", async function() {
         };
     }
 
+    // User Form Modal Functionality
+    const userFormModal = document.getElementById("userFormModal");
+    const userDataForm = document.getElementById("userDataForm");
+    const cancelFormBtn = document.getElementById("cancelForm");
+
+    // Initialize send order button state
+    function updateSendOrderButton() {
+        const sendOrderBtn = document.getElementById("send-order");
+        if (sendOrderBtn) {
+            sendOrderBtn.disabled = cart.length === 0;
+        }
+    }
+
+    updateSendOrderButton();
+
+    // Send Order Button Click Handler
     const sendOrderButton = document.getElementById("send-order");
     if (sendOrderButton) {
         sendOrderButton.addEventListener("click", () => {
@@ -183,39 +199,171 @@ document.addEventListener("DOMContentLoaded", async function() {
                 return;
             }
 
-            const now = new Date();
-
-            let totalAmount = 0;
-            const orderItems = cart.map(item => {
-                totalAmount += item.price * item.quantity;
-                return {
-                    name: item.name,
-                    grams: item.grams,
-                    price: item.price,
-                    quantity: item.quantity,
-                    subtotal: item.price * item.quantity
-                };
-            });
-
-            const order = {
-                items: orderItems,
-                total: totalAmount,
-                time: now.toLocaleString()
-            };
-
-            const history = JSON.parse(localStorage.getItem("orders_history")) || [];
-            history.push(order);
-            localStorage.setItem("orders_history", JSON.stringify(history));
-
-            ordersChannel.postMessage(history);
-
-            cart = [];
-            localStorage.setItem("cart", JSON.stringify(cart));
-            cartChannel.postMessage(cart);
-
-            showCustomAlert("Order sent successfully!");
-            setTimeout(() => window.location.href = "Orders_History.html", 1200);
+            // Show the user form modal
+            if (userFormModal) {
+                userFormModal.classList.add("active");
+            } else {
+                // Fallback to old behavior if modal doesn't exist
+                processOrderWithoutUserData();
+            }
         });
+    }
+
+    // Cancel Form Button
+    if (cancelFormBtn) {
+        cancelFormBtn.addEventListener("click", function() {
+            userFormModal.classList.remove("active");
+        });
+    }
+
+    // Form Submission
+    // Form Submission
+    if (userDataForm) {
+        userDataForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const userName = document.getElementById("userName").value.trim();
+            const userPhone = document.getElementById("userPhone").value.trim();
+            const nameError = document.getElementById("nameError");
+            const phoneError = document.getElementById("phoneError");
+            const nameInput = document.getElementById("userName");
+            const phoneInput = document.getElementById("userPhone");
+
+            // Reset errors and invalid classes
+            nameError.classList.remove("show");
+            phoneError.classList.remove("show");
+            nameInput.classList.remove("invalid");
+            phoneInput.classList.remove("invalid");
+
+            let isValid = true;
+
+            // Name validation
+            if (userName.length < 2) {
+                nameError.classList.add("show");
+                nameInput.classList.add("invalid");
+                isValid = false;
+            }
+
+            // Phone validation (Romanian format)
+            const phoneRegex = /^0[2-9][0-9]{8}$/;
+            const cleanPhone = userPhone.replace(/\s/g, '');
+            if (!phoneRegex.test(cleanPhone)) {
+                phoneError.classList.add("show");
+                phoneInput.classList.add("invalid");
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Process order with user data
+                processOrderWithUserData(userName, cleanPhone);
+
+                // Close modal with delay for smooth transition
+                setTimeout(() => {
+                    userFormModal.classList.remove("active");
+                    userDataForm.reset();
+                }, 300);
+            }
+        });
+    }
+
+    // Close modal when clicking outside
+    if (userFormModal) {
+        userFormModal.addEventListener("click", function(e) {
+            if (e.target === userFormModal) {
+                userFormModal.classList.remove("active");
+            }
+        });
+    }
+
+    // Process order with user data
+    function processOrderWithUserData(userName, userPhone) {
+        const now = new Date();
+
+        let totalAmount = 0;
+        const orderItems = cart.map(item => {
+            totalAmount += item.price * item.quantity;
+            return {
+                name: item.name,
+                grams: item.grams,
+                price: item.price,
+                quantity: item.quantity,
+                subtotal: item.price * item.quantity
+            };
+        });
+
+        const order = {
+            items: orderItems,
+            total: totalAmount,
+            time: now.toLocaleString(),
+            userData: {
+                name: userName,
+                phone: userPhone
+            }
+        };
+
+        const history = JSON.parse(localStorage.getItem("orders_history")) || [];
+        history.push(order);
+        localStorage.setItem("orders_history", JSON.stringify(history));
+
+        ordersChannel.postMessage(history);
+
+        // Clear cart
+        cart = [];
+        localStorage.setItem("cart", JSON.stringify(cart));
+        cartChannel.postMessage(cart);
+
+        showCustomAlert(`Order sent successfully! Thank you, ${userName}!`);
+        setTimeout(() => window.location.href = "Orders_History.html", 1200);
+    }
+
+    // Fallback function for orders without user data
+    function processOrderWithoutUserData() {
+        const now = new Date();
+
+        let totalAmount = 0;
+        const orderItems = cart.map(item => {
+            totalAmount += item.price * item.quantity;
+            return {
+                name: item.name,
+                grams: item.grams,
+                price: item.price,
+                quantity: item.quantity,
+                subtotal: item.price * item.quantity
+            };
+        });
+
+        const order = {
+            items: orderItems,
+            total: totalAmount,
+            time: now.toLocaleString()
+        };
+
+        const history = JSON.parse(localStorage.getItem("orders_history")) || [];
+        history.push(order);
+        localStorage.setItem("orders_history", JSON.stringify(history));
+
+        ordersChannel.postMessage(history);
+
+        cart = [];
+        localStorage.setItem("cart", JSON.stringify(cart));
+        cartChannel.postMessage(cart);
+
+        showCustomAlert("Order sent successfully!");
+        setTimeout(() => window.location.href = "Orders_History.html", 1200);
+    }
+
+    // Update send order button when cart changes
+    function updateSendOrderButtonOnCartChange() {
+        updateSendOrderButton();
+    }
+
+    // Modify renderCart to update the send order button
+    if (cartItemsContainer) {
+        const originalRenderCart = renderCart;
+        renderCart = function() {
+            originalRenderCart();
+            updateSendOrderButtonOnCartChange();
+        };
     }
 
     const ordersList = document.getElementById("orders-list");
@@ -246,6 +394,15 @@ document.addEventListener("DOMContentLoaded", async function() {
                 const total = document.createElement("p");
                 total.classList.add("order-total");
                 total.textContent = `Total: ${order.total} RON`;
+
+                if (order.userData) {
+                    const userInfo = document.createElement("p");
+                    userInfo.classList.add("user-info");
+                    userInfo.textContent = `Ordered by: ${order.userData.name} (${order.userData.phone})`;
+                    userInfo.style.marginTop = "10px";
+                    userInfo.style.fontSize = "18px";
+                    orderDiv.appendChild(userInfo);
+                }
 
                 orderDiv.appendChild(orderTitle);
                 orderDiv.appendChild(itemsList);
@@ -295,3 +452,10 @@ const observer2 = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.2 });
 storyElements.forEach(el => observer2.observe(el));
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && userFormModal.classList.contains('active')) {
+        userFormModal.classList.remove('active');
+        userDataForm.reset();
+    }
+});
