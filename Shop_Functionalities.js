@@ -227,7 +227,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             let isValid = true;
 
-            // Name validation
             if (userName.length < 2) {
                 nameError.classList.add("show");
                 nameInput.classList.add("invalid");
