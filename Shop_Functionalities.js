@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async function() {
-    //localStorage.removeItem("orders_history");
     const footerPlaceholder = document.getElementById("footer-placeholder");
     if (footerPlaceholder) {
         try {
@@ -18,11 +17,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         const alertBox = document.createElement("div");
         alertBox.classList.add("custom-alert");
         alertBox.textContent = message;
-
         document.body.appendChild(alertBox);
-
         setTimeout(() => alertBox.classList.add("visible"), 10);
-
         setTimeout(() => {
             alertBox.classList.remove("visible");
             setTimeout(() => alertBox.remove(), 400);
@@ -44,17 +40,19 @@ document.addEventListener("DOMContentLoaded", async function() {
         const plusBtn = controls.querySelector(".increase");
         const quantitySpan = controls.querySelector(".quantity");
 
-        minusBtn.addEventListener("click", () => {
-            let currentQty = parseInt(quantitySpan.textContent);
-            if (currentQty > 1) {
-                quantitySpan.textContent = currentQty - 1;
-            }
-        });
+        if (minusBtn && plusBtn && quantitySpan) {
+            minusBtn.addEventListener("click", () => {
+                let currentQty = parseInt(quantitySpan.textContent);
+                if (currentQty > 1) {
+                    quantitySpan.textContent = currentQty - 1;
+                }
+            });
 
-        plusBtn.addEventListener("click", () => {
-            let currentQty = parseInt(quantitySpan.textContent);
-            quantitySpan.textContent = currentQty + 1;
-        });
+            plusBtn.addEventListener("click", () => {
+                let currentQty = parseInt(quantitySpan.textContent);
+                quantitySpan.textContent = currentQty + 1;
+            });
+        }
     });
 
     document.querySelectorAll(".add-to-cart")?.forEach((button) => {
@@ -66,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             const gramsElement = coffeeItem.querySelector(".coffee-grams");
             const grams = gramsElement ? gramsElement.innerText : "";
             const quantity = parseInt(coffeeItem.querySelector(".quantity").textContent);
-
             const existingItem = cart.find(item => item.name === name);
 
             if (existingItem) {
@@ -79,7 +76,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             localStorage.setItem("cart", JSON.stringify(cart));
             cartChannel.postMessage(cart);
-
             coffeeItem.querySelector(".quantity").textContent = "1";
         });
     });
@@ -243,11 +239,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
             if (isValid) {
                 processOrderWithUserData(userName, cleanPhone);
-
-                setTimeout(() => {
-                    userFormModal.classList.remove("active");
-                    userDataForm.reset();
-                }, 300);
             }
         });
     }
@@ -261,8 +252,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     function processOrderWithUserData(userName, userPhone) {
-        const now = new Date();
-
         let totalAmount = 0;
         const orderItems = cart.map(item => {
             totalAmount += item.price * item.quantity;
@@ -275,28 +264,71 @@ document.addEventListener("DOMContentLoaded", async function() {
             };
         });
 
-        const order = {
-            items: orderItems,
-            total: totalAmount,
-            time: now.toLocaleString(),
-            userData: {
-                name: userName,
-                phone: userPhone
-            }
-        };
+        localStorage.setItem("current_user", JSON.stringify({
+            name: userName,
+            phone: userPhone
+        }));
 
-        const history = JSON.parse(localStorage.getItem("orders_history")) || [];
-        history.push(order);
-        localStorage.setItem("orders_history", JSON.stringify(history));
+        showCustomAlert("Sending order...");
 
-        ordersChannel.postMessage(history);
+        fetch('save_order.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                customer_name: userName,
+                phone: userPhone,
+                order_data: orderItems,
+                total_amount: totalAmount
+            })
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Server response:', data);
 
-        cart = [];
-        localStorage.setItem("cart", JSON.stringify(cart));
-        cartChannel.postMessage(cart);
+                if (data.success) {
+                    const order = {
+                        items: orderItems,
+                        total: totalAmount,
+                        time: new Date().toLocaleString(),
+                        userData: {
+                            name: userName,
+                            phone: userPhone
+                        },
+                        php_order_id: data.order_id
+                    };
 
-        showCustomAlert(`Order sent successfully! Thank you, ${userName}!`);
-        setTimeout(() => window.location.href = "Orders_History.html", 1200);
+                    const history = JSON.parse(localStorage.getItem("orders_history")) || [];
+                    history.push(order);
+                    localStorage.setItem("orders_history", JSON.stringify(history));
+                    ordersChannel.postMessage(history);
+
+                    cart = [];
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    cartChannel.postMessage(cart);
+
+                    if (userFormModal) {
+                        userFormModal.classList.remove("active");
+                        userDataForm.reset();
+                    }
+
+                    showCustomAlert(`Order sent successfully! Thank you, ${userName}! Order ID: ${data.order_id}`);
+                    setTimeout(() => window.location.href = "Orders_History.html", 1500);
+                } else {
+                    showCustomAlert("Error: " + (data.error || "Unknown error"));
+                    console.error('Order error:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+                showCustomAlert("Network error. Check if server is running and save_order.php exists.");
+            });
     }
 
     function processOrderWithoutUserData() {
@@ -334,108 +366,151 @@ document.addEventListener("DOMContentLoaded", async function() {
         setTimeout(() => window.location.href = "Orders_History.html", 1200);
     }
 
-    function updateSendOrderButtonOnCartChange() {
-        updateSendOrderButton();
-    }
-
-    if (cartItemsContainer) {
-        const originalRenderCart = renderCart;
-        renderCart = function() {
-            originalRenderCart();
-            updateSendOrderButtonOnCartChange();
-        };
-    }
-
     const ordersList = document.getElementById("orders-list");
     if (ordersList) {
-        function renderHistory() {
-            const history = JSON.parse(localStorage.getItem("orders_history")) || [];
-            ordersList.innerHTML = "";
+        async function loadOrdersFromDatabase() {
+            try {
+                const currentUser = JSON.parse(localStorage.getItem("current_user"));
 
-            if (history.length === 0) {
-                ordersList.innerHTML = "<p class='empty-history'>No past orders found.</p>";
-                return;
-            }
+                if (!currentUser) {
+                    ordersList.innerHTML = `
+                        <div class="no-user-message">
+                            <p class='empty-history'>Please place an order first to view your order history.</p>
+                            <button class="base_button" data-target="Menu.html" style="margin-top: 20px;">Go to Menu</button>
+                        </div>
+                    `;
 
-            history.forEach((order, index) => {
-                const orderDiv = document.createElement("div");
-                orderDiv.classList.add("order-entry");
-
-                const orderTitle = document.createElement("h3");
-                orderTitle.textContent = `Order #${index + 1} — ${order.time}`;
-
-                const itemsList = document.createElement("ul");
-                order.items.forEach(item => {
-                    const li = document.createElement("li");
-                    li.textContent = `${item.name} ${item.grams} × ${item.quantity}  -  ${item.subtotal} RON`;
-                    itemsList.appendChild(li);
-                });
-
-                const total = document.createElement("p");
-                total.classList.add("order-total");
-                total.textContent = `Total: ${order.total} RON`;
-
-                if (order.userData) {
-                    const userInfo = document.createElement("p");
-                    userInfo.classList.add("user-info");
-                    userInfo.textContent = `Ordered by: ${order.userData.name} (${order.userData.phone})`;
-                    userInfo.style.marginTop = "10px";
-                    userInfo.style.fontSize = "18px";
-                    orderDiv.appendChild(userInfo);
+                    document.querySelectorAll("button[data-target]").forEach(button => {
+                        button.addEventListener("click", () => {
+                            window.location.href = button.dataset.target;
+                        });
+                    });
+                    return;
                 }
 
-                orderDiv.appendChild(orderTitle);
-                orderDiv.appendChild(itemsList);
-                orderDiv.appendChild(total);
-                ordersList.appendChild(orderDiv);
-            });
-        }
+                ordersList.innerHTML = `<p class='empty-history'>Loading your orders, ${currentUser.name}...</p>`;
 
-        renderHistory();
-        ordersChannel.onmessage = () => {
-            renderHistory();
-        };
-    }
-});
+                const response = await fetch('get_orders.php');
 
-const specialMessage = document.getElementById("goodVibes");
-if (specialMessage) {
-    const initialText = specialMessage.textContent;
-    specialMessage.addEventListener("mousedown", () => {
-        specialMessage.textContent = "Take a moment to slow down.\n" +
-            "    Feel the aroma, hear the quiet hum of the café, and let the world pause for a sip.\n" +
-            "    Because at Coffee Time, every cup is a reminder that the little things make life beautiful. ☕✨";
-    });
-    specialMessage.addEventListener("mouseup", () => {
-        specialMessage.textContent = initialText;
-    });
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting) {
-                specialMessage.classList.add("animate");
-                observer.unobserve(entry.target);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Orders data:', data);
+
+                if (data.success && data.orders && data.orders.length > 0) {
+                    const userOrders = data.orders.filter(order =>
+                        order.customer_name === currentUser.name &&
+                        order.phone === currentUser.phone
+                    );
+
+                    if (userOrders.length > 0) {
+                        ordersList.innerHTML = `
+    <div class="coffee-welcome">
+        <div class="welcome-icon">☕</div>
+        <h2 class="welcome-greeting">Welcome back, ${currentUser.name}!</h2>
+         <p class="thank-you-message">Every cup tells a story. Thank you for letting us be a part of yours! ❤️</p>
+         <p class="welcome-message">Here's your order history:</p>
+    </div>
+`;
+                        userOrders.forEach((order) => {
+                            const orderDiv = document.createElement("div");
+                            orderDiv.classList.add("order-entry");
+
+                            const orderTitle = document.createElement("h3");
+                            orderTitle.textContent = `Order #${order.id} — ${order.order_date}`;
+
+                            const userInfo = document.createElement("p");
+                            userInfo.classList.add("user-info");
+                            userInfo.textContent = `Ordered by: ${order.customer_name} (${order.phone})`;
+                            userInfo.style.marginTop = "10px";
+
+                            const itemsList = document.createElement("ul");
+
+                            try {
+                                const orderItems = JSON.parse(order.order_data);
+                                orderItems.forEach(item => {
+                                    const li = document.createElement("li");
+                                    li.textContent = `${item.name} ${item.grams} × ${item.quantity} - ${item.subtotal} RON`;
+                                    itemsList.appendChild(li);
+                                });
+                            } catch (e) {
+                                console.error('Error parsing order data:', e);
+                                const li = document.createElement("li");
+                                li.textContent = "Error loading order items";
+                                itemsList.appendChild(li);
+                            }
+
+                            const total = document.createElement("p");
+                            total.classList.add("order-total");
+                            total.textContent = `Total: ${order.total_amount} RON`;
+
+                            orderDiv.appendChild(orderTitle);
+                            orderDiv.appendChild(userInfo);
+                            orderDiv.appendChild(itemsList);
+                            orderDiv.appendChild(total);
+                            ordersList.appendChild(orderDiv);
+                        });
+                    } else {
+                        ordersList.innerHTML = `
+                            <p class='empty-history'>No orders found for ${currentUser.name}.</p>
+                            <p style="margin-top: 10px; color: #666;">Start ordering to see your history here!</p>
+                        `;
+                    }
+                } else {
+                    ordersList.innerHTML = `<p class='empty-history'>No orders found for ${currentUser.name}.</p>`;
+                }
+            } catch (error) {
+                console.error('Error loading orders:', error);
+                ordersList.innerHTML = `<p class='empty-history'>Error loading orders: ${error.message}<br>Check if server is running and get_orders.php exists.</p>`;
             }
-        });
-    }, {
-        threshold: 1,
-    });
-    observer.observe(specialMessage);
-}
+        }
+        loadOrdersFromDatabase();
+        setInterval(loadOrdersFromDatabase, 30000);
+    }
 
-const storyElements = document.querySelectorAll("#story h3, .story-text");
-const observer2 = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add("animate");
-            observer2.unobserve(entry.target);
+    const specialMessage = document.getElementById("goodVibes");
+    if (specialMessage) {
+        const initialText = specialMessage.textContent;
+        specialMessage.addEventListener("mousedown", () => {
+            specialMessage.textContent = "Take a moment to slow down.\n" +
+                "    Feel the aroma, hear the quiet hum of the café, and let the world pause for a sip.\n" +
+                "    Because at Coffee Time, every cup is a reminder that the little things make life beautiful. ☕✨";
+        });
+        specialMessage.addEventListener("mouseup", () => {
+            specialMessage.textContent = initialText;
+        });
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    specialMessage.classList.add("animate");
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 1,
+        });
+        observer.observe(specialMessage);
+    }
+
+    const storyElements = document.querySelectorAll("#story h3, .story-text");
+    if (storyElements.length > 0) {
+        const observer2 = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("animate");
+                    observer2.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.2 });
+        storyElements.forEach(el => observer2.observe(el));
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && userFormModal && userFormModal.classList.contains('active')) {
+            userFormModal.classList.remove('active');
+            userDataForm.reset();
         }
     });
-}, { threshold: 0.2 });
-storyElements.forEach(el => observer2.observe(el));
-
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && userFormModal.classList.contains('active')) {
-        userFormModal.classList.remove('active');
-        userDataForm.reset();
-    }
 });
