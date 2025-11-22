@@ -175,22 +175,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         };
     }
 
-    // User Form Modal Functionality
     const userFormModal = document.getElementById("userFormModal");
     const userDataForm = document.getElementById("userDataForm");
     const cancelFormBtn = document.getElementById("cancelForm");
 
-    // Initialize send order button state
     function updateSendOrderButton() {
         const sendOrderBtn = document.getElementById("send-order");
         if (sendOrderBtn) {
             sendOrderBtn.disabled = cart.length === 0;
         }
     }
-
     updateSendOrderButton();
 
-    // Send Order Button Click Handler
     const sendOrderButton = document.getElementById("send-order");
     if (sendOrderButton) {
         sendOrderButton.addEventListener("click", () => {
@@ -199,25 +195,20 @@ document.addEventListener("DOMContentLoaded", async function() {
                 return;
             }
 
-            // Show the user form modal
             if (userFormModal) {
                 userFormModal.classList.add("active");
             } else {
-                // Fallback to old behavior if modal doesn't exist
                 processOrderWithoutUserData();
             }
         });
     }
 
-    // Cancel Form Button
     if (cancelFormBtn) {
         cancelFormBtn.addEventListener("click", function() {
             userFormModal.classList.remove("active");
         });
     }
 
-    // Form Submission
-    // Form Submission
     if (userDataForm) {
         userDataForm.addEventListener("submit", function(e) {
             e.preventDefault();
@@ -229,7 +220,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             const nameInput = document.getElementById("userName");
             const phoneInput = document.getElementById("userPhone");
 
-            // Reset errors and invalid classes
             nameError.classList.remove("show");
             phoneError.classList.remove("show");
             nameInput.classList.remove("invalid");
@@ -244,7 +234,6 @@ document.addEventListener("DOMContentLoaded", async function() {
                 isValid = false;
             }
 
-            // Phone validation (Romanian format)
             const phoneRegex = /^0[2-9][0-9]{8}$/;
             const cleanPhone = userPhone.replace(/\s/g, '');
             if (!phoneRegex.test(cleanPhone)) {
@@ -254,10 +243,8 @@ document.addEventListener("DOMContentLoaded", async function() {
             }
 
             if (isValid) {
-                // Process order with user data
                 processOrderWithUserData(userName, cleanPhone);
 
-                // Close modal with delay for smooth transition
                 setTimeout(() => {
                     userFormModal.classList.remove("active");
                     userDataForm.reset();
@@ -266,7 +253,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // Close modal when clicking outside
     if (userFormModal) {
         userFormModal.addEventListener("click", function(e) {
             if (e.target === userFormModal) {
@@ -275,7 +261,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // Process order with user data
     function processOrderWithUserData(userName, userPhone) {
         const now = new Date();
 
@@ -307,7 +292,6 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         ordersChannel.postMessage(history);
 
-        // Clear cart
         cart = [];
         localStorage.setItem("cart", JSON.stringify(cart));
         cartChannel.postMessage(cart);
@@ -316,7 +300,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         setTimeout(() => window.location.href = "Orders_History.html", 1200);
     }
 
-    // Fallback function for orders without user data
     function processOrderWithoutUserData() {
         const now = new Date();
 
@@ -352,12 +335,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         setTimeout(() => window.location.href = "Orders_History.html", 1200);
     }
 
-    // Update send order button when cart changes
     function updateSendOrderButtonOnCartChange() {
         updateSendOrderButton();
     }
 
-    // Modify renderCart to update the send order button
     if (cartItemsContainer) {
         const originalRenderCart = renderCart;
         renderCart = function() {

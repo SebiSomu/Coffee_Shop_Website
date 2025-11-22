@@ -671,7 +671,6 @@ body#index-page .base_button {
     text-align: center;
 }
 
-/* Tranzitii elegante pentru modal - VERSIUNE CORECTATA */
 .user-form-modal {
     position: fixed;
     top: 0;
@@ -712,7 +711,6 @@ body#index-page .base_button {
     opacity: 1;
 }
 
-/* Animație pentru elementele din formular */
 .form-group {
     margin-bottom: 25px;
     transform: translateX(-20px);
@@ -749,7 +747,6 @@ body#index-page .base_button {
     transition-delay: 0.3s;
 }
 
-/* Animație pentru titlu */
 .user-form-container h3 {
     color: #3D2012;
     font-family: 'Playfair Display', serif;
@@ -769,7 +766,6 @@ body#index-page .base_button {
     transition-delay: 0.05s;
 }
 
-/* Stiluri pentru butoanele formularului cu hover effects */
 .form-submit-btn, .form-cancel-btn {
     padding: 12px 25px;
     border: 2px solid;
@@ -825,7 +821,6 @@ body#index-page .base_button {
     box-shadow: 0 6px 12px rgba(139, 69, 19, 0.3);
 }
 
-/* Animație pentru input fields la focus */
 .form-group input {
     width: 100%;
     padding: 12px 15px;
@@ -845,7 +840,6 @@ body#index-page .base_button {
     transform: translateY(-2px);
 }
 
-/* Stil pentru erori cu animație */
 .form-error {
     color: #d9534f;
     font-size: 14px;
@@ -863,7 +857,6 @@ body#index-page .base_button {
     opacity: 1;
 }
 
-/* Animație shake pentru câmpuri invalide */
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-8px); }
