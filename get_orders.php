@@ -16,7 +16,6 @@ if ($conn->connect_error) {
     exit;
 }
 
-// Obține toate comenzile din baza de date
 $sql = "SELECT id, customer_name, phone, order_data, total_amount, order_date 
         FROM orders 
         ORDER BY order_date DESC";
