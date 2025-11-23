@@ -220,10 +220,11 @@ document.addEventListener("DOMContentLoaded", async function() {
             phoneError.classList.remove("show");
             nameInput.classList.remove("invalid");
             phoneInput.classList.remove("invalid");
-
             let isValid = true;
 
-            if (userName.length < 2) {
+            const nameRegex = /^[a-zA-ZÀ-ÿ\u0100-\u017F\u0180-\u024F]+\s+[a-zA-ZÀ-ÿ\u0100-\u017F\u0180-\u024F]+.*$/;
+            if (!nameRegex.test(userName) || userName.length < 3) {
+                nameError.textContent = "Please enter your full name (first and last name)";
                 nameError.classList.add("show");
                 nameInput.classList.add("invalid");
                 isValid = false;
@@ -264,7 +265,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             };
         });
 
-        localStorage.setItem("current_user", JSON.stringify({
+        sessionStorage.setItem("current_user", JSON.stringify({
             name: userName,
             phone: userPhone
         }));
@@ -355,13 +356,10 @@ document.addEventListener("DOMContentLoaded", async function() {
         const history = JSON.parse(localStorage.getItem("orders_history")) || [];
         history.push(order);
         localStorage.setItem("orders_history", JSON.stringify(history));
-
         ordersChannel.postMessage(history);
-
         cart = [];
         localStorage.setItem("cart", JSON.stringify(cart));
         cartChannel.postMessage(cart);
-
         showCustomAlert("Order sent successfully!");
         setTimeout(() => window.location.href = "Orders_History.html", 1200);
     }
@@ -370,28 +368,15 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (ordersList) {
         async function loadOrdersFromDatabase() {
             try {
-                const currentUser = JSON.parse(localStorage.getItem("current_user"));
-
+                const currentUser = JSON.parse(sessionStorage.getItem("current_user"));
                 if (!currentUser) {
-                    ordersList.innerHTML = `
-                        <div class="no-user-message">
-                            <p class='empty-history'>Please place an order first to view your order history.</p>
-                            <button class="base_button" data-target="Menu.html" style="margin-top: 20px;">Go to Menu</button>
-                        </div>
-                    `;
-
-                    document.querySelectorAll("button[data-target]").forEach(button => {
-                        button.addEventListener("click", () => {
-                            window.location.href = button.dataset.target;
-                        });
-                    });
+                    ordersList.innerHTML = `<p class="empty-history">No orders found. You are not logged in. <br> Place an order to see your history here!</p>`;
                     return;
                 }
 
-                ordersList.innerHTML = `<p class='empty-history'>Loading your orders, ${currentUser.name}...</p>`;
+                ordersList.innerHTML = `<p class="empty-history">Loading your orders, ${currentUser.name}...</p>`;
 
                 const response = await fetch('get_orders.php');
-
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
@@ -407,13 +392,14 @@ document.addEventListener("DOMContentLoaded", async function() {
 
                     if (userOrders.length > 0) {
                         ordersList.innerHTML = `
-    <div class="coffee-welcome">
-        <div class="welcome-icon">☕</div>
-        <h2 class="welcome-greeting">Welcome back, ${currentUser.name}!</h2>
-         <p class="thank-you-message">Every cup tells a story. Thank you for letting us be a part of yours! ❤️</p>
-         <p class="welcome-message">Here's your order history:</p>
-    </div>
-`;
+                            <div class="coffee-welcome">
+                                <div class="welcome-icon">☕</div>
+                                <h2 class="welcome-greeting">Welcome back, ${currentUser.name}!</h2>
+                                <p class="thank-you-message">Every cup tells a story. Thank you for letting us be a part of yours! ❤️</p>
+                                <p class="welcome-message">Here's your order history:</p>
+                            </div>
+                        `;
+
                         userOrders.forEach((order) => {
                             const orderDiv = document.createElement("div");
                             orderDiv.classList.add("order-entry");
@@ -466,6 +452,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 ordersList.innerHTML = `<p class='empty-history'>Error loading orders: ${error.message}<br>Check if server is running and get_orders.php exists.</p>`;
             }
         }
+
         loadOrdersFromDatabase();
         setInterval(loadOrdersFromDatabase, 30000);
     }

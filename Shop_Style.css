@@ -1024,3 +1024,19 @@ body#index-page .base_button {
 @keyframes fadeIn {
     to { opacity: 1; }
 }
+
+.empty-history {
+    text-align: center;
+    color: #8b4513;
+    font-size: 20px;
+    font-family: 'Cormorant Garamond', serif;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: #f8f3ee;
+    border: 1px solid rgba(139, 69, 19, 0.3);
+    border-radius: 10px;
+    max-width: 600px;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+}
+
