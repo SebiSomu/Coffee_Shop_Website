@@ -17,7 +17,7 @@ body {
     background-color: #3D2012;
     color: white;
     border: 3px solid #3D2012;
-    font-size: 52px;
+    font-size: 55px;
     font-family: 'Cormorant Garamond', sans-serif;
     text-transform: uppercase;
     text-shadow:
@@ -29,7 +29,7 @@ body {
             0 -1px 0 #8B4513,
             1px 0 0 #8B4513,
             -1px 0 0 #8B4513;
-    padding-top: 35px;
+    padding-top: 70px;
     letter-spacing: 2px;
     font-weight: 750;
     -webkit-text-stroke: 1px rgba(0,0,0,0.1);
@@ -65,7 +65,7 @@ body {
     width: 100%;
     overflow: hidden;
     margin: 0;
-    max-height: 175px;
+    max-height: 150px;
 }
 
 #banner-img {
