@@ -220,6 +220,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             phoneError.classList.remove("show");
             nameInput.classList.remove("invalid");
             phoneInput.classList.remove("invalid");
+
             let isValid = true;
 
             const nameRegex = /^[a-zA-ZÀ-ÿ\u0100-\u017F\u0180-\u024F]+\s+[a-zA-ZÀ-ÿ\u0100-\u017F\u0180-\u024F]+.*$/;
@@ -356,10 +357,13 @@ document.addEventListener("DOMContentLoaded", async function() {
         const history = JSON.parse(localStorage.getItem("orders_history")) || [];
         history.push(order);
         localStorage.setItem("orders_history", JSON.stringify(history));
+
         ordersChannel.postMessage(history);
+
         cart = [];
         localStorage.setItem("cart", JSON.stringify(cart));
         cartChannel.postMessage(cart);
+
         showCustomAlert("Order sent successfully!");
         setTimeout(() => window.location.href = "Orders_History.html", 1200);
     }
@@ -370,12 +374,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             try {
                 const currentUser = JSON.parse(sessionStorage.getItem("current_user"));
                 if (!currentUser) {
-                    ordersList.innerHTML = `<p class="empty-history">No orders found. You are not logged in. <br> Place an order to see your history here!</p>`;
+                    ordersList.innerHTML = '<p class="empty-history">No orders found. Place an order to see your history here!</p>';
                     return;
                 }
-
                 ordersList.innerHTML = `<p class="empty-history">Loading your orders, ${currentUser.name}...</p>`;
-
                 const response = await fetch('get_orders.php');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -440,16 +442,16 @@ document.addEventListener("DOMContentLoaded", async function() {
                         });
                     } else {
                         ordersList.innerHTML = `
-                            <p class='empty-history'>No orders found for ${currentUser.name}.</p>
+                            <p class="empty-history">No orders found for ${currentUser.name}.</p>
                             <p style="margin-top: 10px; color: #666;">Start ordering to see your history here!</p>
                         `;
                     }
                 } else {
-                    ordersList.innerHTML = `<p class='empty-history'>No orders found for ${currentUser.name}.</p>`;
+                    ordersList.innerHTML = `<p class="empty-history">No orders found for ${currentUser.name}.</p>`;
                 }
             } catch (error) {
                 console.error('Error loading orders:', error);
-                ordersList.innerHTML = `<p class='empty-history'>Error loading orders: ${error.message}<br>Check if server is running and get_orders.php exists.</p>`;
+                ordersList.innerHTML = `<p class="empty-history">Error loading orders: ${error.message}<br>Check if server is running and get_orders.php exists.</p>`;
             }
         }
 
@@ -500,4 +502,183 @@ document.addEventListener("DOMContentLoaded", async function() {
             userDataForm.reset();
         }
     });
+
+    const starRating = document.getElementById('starRating');
+    const ratingText = document.getElementById('ratingText');
+    const reviewForm = document.getElementById('reviewForm');
+    const submitReviewBtn = document.getElementById('submitReview');
+    let selectedRating = 0;
+
+    if (submitReviewBtn) {
+        submitReviewBtn.disabled = true;
+    }
+
+    if (starRating) {
+        const stars = starRating.querySelectorAll('.rating-star');
+
+        stars.forEach((star, index) => {
+            star.addEventListener('mouseenter', () => {
+                stars.forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.add('hover');
+                    } else {
+                        s.classList.remove('hover');
+                    }
+                });
+            });
+
+            star.addEventListener('mouseleave', () => {
+                stars.forEach(s => s.classList.remove('hover'));
+            });
+
+            star.addEventListener('click', () => {
+                selectedRating = parseInt(star.dataset.rating);
+
+                stars.forEach((s, i) => {
+                    if (i < selectedRating) {
+                        s.classList.add('selected');
+                    } else {
+                        s.classList.remove('selected');
+                    }
+                });
+
+                const ratingMessages = {
+                    1: "😞 We're very sorry to hear that!",
+                    2: "😕 Ok, we can do better",
+                    3: "😊 Thank you for your feedback",
+                    4: "😄 Great! We're glad you enjoyed",
+                    5: "🤩 Awesome! Thank you so much!"
+                };
+                ratingText.textContent = ratingMessages[selectedRating];
+                if (submitReviewBtn && selectedRating > 0) {
+                    submitReviewBtn.disabled = false;
+                }
+            });
+        });
+    }
+
+    if (reviewForm) {
+        reviewForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (selectedRating === 0) {
+                showCustomAlert("Please select a rating first!");
+                return;
+            }
+
+            const reviewName = document.getElementById('reviewName').value.trim();
+            const reviewTextValue = document.getElementById('reviewText').value.trim();
+
+            const ratingData = {
+                rating: selectedRating,
+                customer_name: reviewName || 'Anonymous',
+                review_text: reviewTextValue
+            };
+
+            showCustomAlert("Submitting your rating...");
+
+            try {
+                const response = await fetch('save_rating.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(ratingData)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Rating response:', data);
+
+                if (data.success) {
+                    showCustomAlert("Thank you for your feedback! ⭐");
+                    reviewForm.reset();
+                    selectedRating = 0;
+                    if (submitReviewBtn) {
+                        submitReviewBtn.disabled = true;
+                    }
+
+                    const stars = starRating.querySelectorAll('.star');
+                    stars.forEach(s => s.classList.remove('selected'));
+                    ratingText.textContent = "Click to rate";
+
+                    setTimeout(() => {
+                        window.location.href = "Shop_Structure.html";
+                    }, 1500);
+
+                } else {
+                    showCustomAlert("Error: " + (data.error || "Unknown error"));
+                    console.error('Rating error:', data);
+                }
+            } catch (error) {
+                console.error('Network error:', error);
+                showCustomAlert("Network error. Check if server is running.");
+            }
+        });
+    }
+
+    const recentRatingsContainer = document.getElementById('recentRatings');
+    if (recentRatingsContainer) {
+        async function loadRatingsFromDatabase() {
+            try {
+                const response = await fetch('get_ratings.php');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Ratings data:', data);
+
+                if (data.success && data.ratings && data.ratings.length > 0) {
+                    recentRatingsContainer.innerHTML = '';
+
+                    data.ratings.forEach(rating => {
+                        const ratingDiv = document.createElement('div');
+                        ratingDiv.classList.add('rating-item');
+
+                        let starsHTML = '';
+                        for (let i = 1; i <= 5; i++) {
+                            if (i <= rating.rating) {
+                                starsHTML += '⭐';
+                            } else {
+                                starsHTML += '☆';
+                            }
+                        }
+
+                        const date = new Date(rating.created_at);
+                        const formattedDate = date.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+
+                        ratingDiv.innerHTML = `
+                            <div class="rating-header-info">
+                                <span class="rating-stars-display">${starsHTML}</span>
+                                <span class="rating-date">${formattedDate}</span>
+                            </div>
+                            <div class="rating-name">${rating.customer_name}</div>
+                            ${rating.review_text ? `<div class="rating-review-text">${rating.review_text}</div>` : ''}
+                        `;
+
+                        recentRatingsContainer.appendChild(ratingDiv);
+                    });
+                } else {
+                    recentRatingsContainer.innerHTML = '<p class="no-ratings">No reviews yet. Be the first to rate us! ⭐</p>';
+                }
+            } catch (error) {
+                console.error('Error loading ratings:', error);
+                recentRatingsContainer.innerHTML = '<p class="no-ratings">Error loading reviews. Please try again later.</p>';
+            }
+        }
+
+        loadRatingsFromDatabase();
+        setInterval(loadRatingsFromDatabase, 30000);
+    }
 });

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rate us - Coffee Time</title>
+    <link rel="stylesheet" href="Shop_Style.css">
+    <link rel="icon" type="image/png" href="favicon.svg">
+</head>
+<body class="rateus-page">
+
+<div id="rating-section">
+    <h2 class="auxiliarySitesTitles">Rate Your Experience</h2>
+
+    <div class="rating-box">
+        <div class="rating-coffee-icon">
+            <div class="coffee-cup">☕</div>
+            <div class="steam">
+                <span class="steam-line"></span>
+                <span class="steam-line"></span>
+                <span class="steam-line"></span>
+            </div>
+        </div>
+        <p class="rating-subtitle-text">We'd love to hear your thoughts!</p>
+
+        <div class="rating-stars-section">
+            <p class="rating-question">How would you rate us?</p>
+            <div id="starRating" class="rating-stars-container">
+                <span class="rating-star" data-rating="1">★</span>
+                <span class="rating-star" data-rating="2">★</span>
+                <span class="rating-star" data-rating="3">★</span>
+                <span class="rating-star" data-rating="4">★</span>
+                <span class="rating-star" data-rating="5">★</span>
+            </div>
+            <p id="ratingText" class="rating-feedback-text">Click to rate</p>
+        </div>
+
+        <div class="rating-form-section">
+            <form id="reviewForm">
+                <div class="rating-form-group">
+                    <label for="reviewName">Your Name (Optional)</label>
+                    <input type="text" id="reviewName" placeholder="Enter your name">
+                </div>
+
+                <div class="rating-form-group">
+                    <label for="reviewText">Your Review (Optional)</label>
+                    <textarea id="reviewText" rows="5" placeholder="Tell us about your experience..."></textarea>
+                </div>
+
+                <div class="rating-form-buttons">
+                    <button type="submit" id="submitReview" class="base_button" disabled>Submit Rating</button>
+                    <button type="button" class="base_button" data-target="Shop_Structure.html">Back to Home</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="rating-reviews-display">
+        <h3 class="rating-reviews-title">Recent Reviews</h3>
+        <div id="recentRatings">
+            <p class="rating-loading-text">Loading reviews...</p>
+        </div>
+    </div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="Shop_Functionalities.js"></script>
+</body>
+</html>
