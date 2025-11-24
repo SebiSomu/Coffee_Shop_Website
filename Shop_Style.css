@@ -101,7 +101,7 @@ body {
 }
 
 #story h3 {
-    font-size: 42px;
+    font-size: 52px;
     color: #3D2012;
     text-transform: uppercase;
     font-family: 'Playfair Display', serif;
@@ -1068,6 +1068,20 @@ body.rateus-page #footer {
     border: 2px solid rgba(139, 69, 19, 0.2);
     margin-bottom: 40px;
     transition: all 0.3s ease;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: ratingBoxEntrance 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s forwards;
+}
+
+@keyframes ratingBoxEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .rating-box:hover {
@@ -1079,12 +1093,28 @@ body.rateus-page #footer {
     text-align: center;
     font-size: 48px;
     margin-bottom: 20px;
-    animation: floatCoffee 3s ease-in-out infinite;
+    opacity: 0;
+    animation: iconFadeIn 0.6s ease-out 0.4s forwards, floatCoffee 3s ease-in-out 1s infinite;
+}
+
+@keyframes iconFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 @keyframes floatCoffee {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .rating-subtitle-text {
@@ -1093,11 +1123,39 @@ body.rateus-page #footer {
     color: #5e3c15;
     font-family: 'Playfair Display', serif;
     margin-bottom: 30px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out 0.6s forwards;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .rating-stars-section {
     text-align: center;
     margin-bottom: 30px;
+    opacity: 0;
+    transform: scale(0.9);
+    animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.8s forwards;
+}
+
+@keyframes scaleIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .rating-question {
@@ -1159,6 +1217,9 @@ body.rateus-page #footer {
     margin-top: 30px;
     padding-top: 30px;
     border-top: 2px solid rgba(139, 69, 19, 0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out 1s forwards;
 }
 
 .rating-form-group {
@@ -1212,10 +1273,29 @@ body.rateus-page #footer {
     justify-content: center;
     flex-wrap: wrap;
     margin-top: 25px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.6s ease-out 1.2s forwards;
 }
 
 .rating-form-buttons .base_button {
     margin: 0;
+}
+
+.rating-form-buttons .base_button:disabled {
+    background-color: #d3d3d3;
+    color: #999;
+    border-color: #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
+}
+
+.rating-form-buttons .base_button:disabled:hover {
+    background-color: #d3d3d3;
+    color: #999;
+    box-shadow: none;
+    transform: none;
 }
 
 .rating-reviews-display {
@@ -1224,6 +1304,9 @@ body.rateus-page #footer {
     padding: 30px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     margin-bottom: 100px;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.8s ease-out 1.4s forwards;
 }
 
 .rating-reviews-title {
@@ -1338,27 +1421,7 @@ body.rateus-page #footer {
     font-size: 18px;
 }
 
-@media (max-width: 768px) {
-    #rating-section {
-        padding: 20px 20px 150px 20px;
-    }
-    .rating-box {
-        padding: 25px;
-    }
-    .rating-stars-container {
-        gap: 5px;
-    }
-    .rating-star {
-        font-size: 36px;
-    }
-    .rating-form-buttons {
-        flex-direction: column;
-    }
-    .rating-form-buttons .base_button {
-        width: 100%;
-    }
-}
-
+/* Coffee cup with steam animation */
 .rating-coffee-icon {
     text-align: center;
     font-size: 48px;
@@ -1432,5 +1495,26 @@ body.rateus-page #footer {
     100% {
         opacity: 0;
         transform: translateY(-40px) scaleX(0.8);
+    }
+}
+
+@media (max-width: 768px) {
+    #rating-section {
+        padding: 20px 20px 150px 20px;
+    }
+    .rating-box {
+        padding: 25px;
+    }
+    .rating-stars-container {
+        gap: 5px;
+    }
+    .rating-star {
+        font-size: 36px;
+    }
+    .rating-form-buttons {
+        flex-direction: column;
+    }
+    .rating-form-buttons .base_button {
+        width: 100%;
     }
 }
