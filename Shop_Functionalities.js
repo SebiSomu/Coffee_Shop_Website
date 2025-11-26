@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                         userDataForm.reset();
                     }
 
-                    showCustomAlert(`Order sent successfully! Thank you, ${userName}! Order ID: ${data.order_id}`);
+                    showCustomAlert(`Order sent successfully! Thank you, ${userName}!`);
                     setTimeout(() => window.location.href = "Orders_History.html", 1500);
                 } else {
                     showCustomAlert("Error: " + (data.error || "Unknown error"));
