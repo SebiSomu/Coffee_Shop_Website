@@ -1,6 +1,5 @@
 ☕ Coffee Time - Online Coffee Shop
 A full-stack web application for ordering coffee online, featuring a complete shopping cart, order history, and review system.
-<img width="1896" height="806" alt="image" src="https://github.com/user-attachments/assets/05b3369b-5ae5-4d53-a74c-33c562bfd7ac" />
 
 🚀 Features
 
