@@ -378,7 +378,11 @@ document.addEventListener("DOMContentLoaded", async function() {
                     return;
                 }
                 ordersList.innerHTML = `<p class="empty-history">Loading your orders, ${currentUser.name}...</p>`;
-                const response = await fetch('get_orders.php');
+                const response = await fetch('get_orders.php', {
+                    headers: {
+                        'X-Admin-Password': 'CoffeeTime+2025!'
+                    }
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

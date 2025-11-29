@@ -9,6 +9,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+$admin_password = "CoffeeTime+2025!";
+
+$provided_password = isset($_SERVER['HTTP_X_ADMIN_PASSWORD'])
+    ? $_SERVER['HTTP_X_ADMIN_PASSWORD']
+    : '';
+
+if ($provided_password !== $admin_password) {
+    http_response_code(401);
+    echo json_encode([
+        "success" => false,
+        "error" => "Unauthorized access"
+    ]);
+    exit;
+}
+
 $servername = "localhost";
 $username = "root";
 $password = "";
