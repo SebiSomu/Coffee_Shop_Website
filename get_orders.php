@@ -71,7 +71,7 @@ try {
             'id' => intval($row['id']),
             'customer_name' => htmlspecialchars($row['customer_name'], ENT_QUOTES, 'UTF-8'),
             'phone' => htmlspecialchars($row['phone'], ENT_QUOTES, 'UTF-8'),
-            'order_data' => $row['order_data'], // JSON este deja safe
+            'order_data' => $row['order_data'],
             'total_amount' => floatval($row['total_amount']),
             'order_date' => $row['order_date']
         ];
