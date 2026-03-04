@@ -1,8 +1,8 @@
 {
-  "name": "Coffee_Shop_Website",
+  "name": "coffee-shop-website",
   "version": "1.0.0",
   "description": "",
-  "main": "Shop_Functionalities.js",
+  "main": "functionalities/Shop_Functionalities.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Your Order</title>
+    <link rel="stylesheet" href="../css/Shop_Style.css">
+    <link rel="icon" type="image/png" href="../assets/favicon.svg">
+</head>
+
+<body class="order-page">
+
+    <div id="order-section">
+        <h2 class="auxiliarySitesTitles">Your Order</h2>
+        <div id="cart-items"></div>
+        <h3 id="total"></h3>
+        <button class="base_button" id="send-order">Send Order</button>
+        <button class="base_button" data-target="Menu.html">Back to Menu</button>
+    </div>
+
+    <div id="userFormModal" class="user-form-modal">
+        <div class="user-form-container">
+            <h3>Complete Your Order Details</h3>
+            <form id="userDataForm">
+                <div class="form-group">
+                    <label for="userName">Full Name:</label>
+                    <input type="text" id="userName" name="userName" required placeholder="Enter your full name">
+                    <div class="form-error" id="nameError">Please enter a valid name</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="userPhone">Phone Number:</label>
+                    <input type="tel" id="userPhone" name="userPhone" required placeholder="07xx xxx xxx">
+                    <div class="form-error" id="phoneError">Please enter a valid phone number</div>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="submit" class="form-submit-btn">Send Order</button>
+                    <button type="button" class="form-cancel-btn" id="cancelForm">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="footer-placeholder"></div>
+    <script src="../functionalities/Shop_Functionalities.js"></script>
+</body>
+
+</html>

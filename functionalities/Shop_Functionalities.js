@@ -1,8 +1,11 @@
-document.addEventListener("DOMContentLoaded", async function() {
+document.addEventListener("DOMContentLoaded", async function () {
+    const isRoot = window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/") || !window.location.pathname.includes(".html");
+    const base = isRoot ? "" : "../";
+
     const footerPlaceholder = document.getElementById("footer-placeholder");
     if (footerPlaceholder) {
         try {
-            const response = await fetch("footer.html");
+            const response = await fetch(base + "pages/Footer.html");
             if (response.ok) {
                 footerPlaceholder.innerHTML = await response.text();
             } else {
@@ -200,13 +203,13 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     if (cancelFormBtn) {
-        cancelFormBtn.addEventListener("click", function() {
+        cancelFormBtn.addEventListener("click", function () {
             userFormModal.classList.remove("active");
         });
     }
 
     if (userDataForm) {
-        userDataForm.addEventListener("submit", function(e) {
+        userDataForm.addEventListener("submit", function (e) {
             e.preventDefault();
 
             const userName = document.getElementById("userName").value.trim();
@@ -246,7 +249,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     if (userFormModal) {
-        userFormModal.addEventListener("click", function(e) {
+        userFormModal.addEventListener("click", function (e) {
             if (e.target === userFormModal) {
                 userFormModal.classList.remove("active");
             }
@@ -273,7 +276,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
         showCustomAlert("Sending order...");
 
-        fetch('save_order.php', {
+        fetch(base + 'php-server/save_order.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -321,7 +324,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     }
 
                     showCustomAlert(`Order sent successfully! Thank you, ${userName}!`);
-                    setTimeout(() => window.location.href = "Orders_History.html", 1500);
+                    setTimeout(() => window.location.href = base + "pages/Orders_History.html", 1500);
                 } else {
                     showCustomAlert("Error: " + (data.error || "Unknown error"));
                     console.error('Order error:', data);
@@ -365,7 +368,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         cartChannel.postMessage(cart);
 
         showCustomAlert("Order sent successfully!");
-        setTimeout(() => window.location.href = "Orders_History.html", 1200);
+        setTimeout(() => window.location.href = base + "pages/Orders_History.html", 1200);
     }
 
     const ordersList = document.getElementById("orders-list");
@@ -378,7 +381,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     return;
                 }
                 ordersList.innerHTML = `<p class="empty-history">Loading your orders, ${currentUser.name}...</p>`;
-                const response = await fetch('get_orders.php', {
+                const response = await fetch(base + 'php-server/get_orders.php', {
                     headers: {
                         'X-Admin-Password': 'CoffeeTime+2025!'
                     }
@@ -455,7 +458,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 }
             } catch (error) {
                 console.error('Error loading orders:', error);
-                ordersList.innerHTML = `<p class="empty-history">Error loading orders: ${error.message}<br>Check if server is running and get_orders.php exists.</p>`;
+                ordersList.innerHTML = `<p class="empty-history">Error loading orders: ${error.message}<br>Check if server is running and php-server/get_orders.php exists.</p>`;
             }
         }
 
@@ -476,7 +479,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if(entry.isIntersecting) {
+                if (entry.isIntersecting) {
                     specialMessage.classList.add("animate");
                     observer.unobserve(entry.target);
                 }
@@ -500,7 +503,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         storyElements.forEach(el => observer2.observe(el));
     }
 
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && userFormModal && userFormModal.classList.contains('active')) {
             userFormModal.classList.remove('active');
             userDataForm.reset();
@@ -562,7 +565,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     if (reviewForm) {
-        reviewForm.addEventListener('submit', async function(e) {
+        reviewForm.addEventListener('submit', async function (e) {
             e.preventDefault();
 
             if (selectedRating === 0) {
@@ -582,7 +585,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             showCustomAlert("Submitting your rating...");
 
             try {
-                const response = await fetch('save_rating.php', {
+                const response = await fetch(base + 'php-server/save_rating.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -610,7 +613,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                     ratingText.textContent = "Click to rate";
 
                     setTimeout(() => {
-                        window.location.href = "Shop_Structure.html";
+                        window.location.href = base + "index.html";
                     }, 1500);
 
                 } else {
@@ -628,7 +631,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     if (recentRatingsContainer) {
         async function loadRatingsFromDatabase() {
             try {
-                const response = await fetch('get_ratings.php');
+                const response = await fetch(base + 'php-server/get_ratings.php');
 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
