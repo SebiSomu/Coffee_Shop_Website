@@ -9,17 +9,37 @@
 </head>
 
 <body class="order-page">
+    <nav id="topNav">
+        <div class="logo" onclick="window.location.href='../index.html'" style="cursor:pointer">☕ CoffeeTime</div>
+        
+        <button id="mobile-toggle" class="mobile-toggle" style="display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary);">
+            <span id="open-icon">☰</span>
+            <span id="close-icon" style="display: none;">✕</span>
+        </button>
 
-    <div id="order-section">
-        <h2 class="auxiliarySitesTitles">Your Order</h2>
-        <div id="cart-items"></div>
-        <h3 id="total"></h3>
-        <button class="base_button" id="send-order">Send Order</button>
-        <button class="base_button" data-target="Menu.html">Back to Menu</button>
+        <ul>
+            <li><a href="Menu.html">Menu</a></li>
+            <li><a href="Order.html" class="active">Order</a></li>
+            <li><a href="Orders_History.html">History</a></li>
+            <li><a href="RateUs.html">Rate Us</a></li>
+        </ul>
+    </nav>
+
+    <div id="order-section" class="menu-view">
+        <div style="text-align: center;">
+            <h2 class="auxiliarySitesTitles">Your Order</h2>
+        </div>
+        <div class="cart-items">
+            <div id="cart-items"></div>
+            <h3 id="total"></h3>
+        </div>
+        <div style="margin-top: 3rem; text-align: center;">
+            <button class="add-to-cart" id="send-order" style="background: var(--primary); color: white; max-width: 280px; margin: 0 auto;">Place Order Now</button>
+        </div>
     </div>
 
-    <div id="userFormModal" class="user-form-modal">
-        <div class="user-form-container">
+    <div id="userFormModal" class="modal">
+        <div class="modal-content">
             <h3>Complete Your Order Details</h3>
             <form id="userDataForm">
                 <div class="form-group">
@@ -35,8 +55,8 @@
                 </div>
 
                 <div class="form-buttons">
-                    <button type="submit" class="form-submit-btn">Send Order</button>
-                    <button type="button" class="form-cancel-btn" id="cancelForm">Cancel</button>
+                    <button type="submit" class="add-to-cart">Send Order</button>
+                    <button type="button" class="qty-btn" id="cancelForm" style="width: auto; padding: 0 1rem; margin-top: 1rem;">Cancel</button>
                 </div>
             </form>
         </div>

@@ -9,9 +9,27 @@
 </head>
 
 <body>
-    <div id="menu-section">
-        <h2 class="auxiliarySitesTitles">Our Coffee Menu</h2>
+    <nav id="topNav">
+        <div class="logo" onclick="window.location.href='../index.html'" style="cursor:pointer">☕ CoffeeTime</div>
+        
+        <button id="mobile-toggle" class="mobile-toggle" style="display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary);">
+            <span id="open-icon">☰</span>
+            <span id="close-icon" style="display: none;">✕</span>
+        </button>
 
+        <ul>
+            <li><a href="Menu.html" class="active">Menu</a></li>
+            <li><a href="Order.html">Order</a></li>
+            <li><a href="Orders_History.html">History</a></li>
+            <li><a href="RateUs.html">Rate Us</a></li>
+        </ul>
+    </nav>
+    <div id="menu-section" class="menu-view">
+        <div style="text-align: center;">
+            <h2 class="auxiliarySitesTitles">Our Coffee Menu</h2>
+        </div>
+
+        <div class="menu-grid">
         <div class="coffee-item">
             <div class="coffee-header">
                 <h3>Espresso</h3>
@@ -170,16 +188,15 @@
             </div>
             <button class="add-to-cart">Add to cart</button>
         </div>
+        </div>
     </div>
 
-    <button class="base_button" data-target="../index.html">Back</button>
-    <button class="base_button" data-target="Order.html">Your order</button>
+    <div style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 2rem; margin-bottom: 4rem;">
+        <button class="base_button" onclick="window.location.href='../index.html'">Back Home</button>
+        <button class="base_button" onclick="window.location.href='Order.html'">Your Order</button>
+    </div>
 
-    <footer id="footer">
-        <p><strong>Coffee Time © 2025</strong> — All rights reserved</p>
-        <p>☕ made in Brasov with passion | Phone: +40 712 345 678</p>
-        <p>Email: contact@coffeetime.ro</p>
-    </footer>
+    <div id="footer-placeholder"></div>
 
     <script src="../functionalities/Shop_Functionalities.js"></script>
 </body>

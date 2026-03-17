@@ -5,21 +5,24 @@
     <meta charset="UTF-8">
     <title>CoffeeTime</title>
     <link rel="stylesheet" href="css/Shop_Style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="assets/favicon.svg">
 
 </head>
 
 <body id="index-page">
     <nav id="topNav">
-        <div class="logo">☕ Our coffee shop</div>
+        <div class="logo" onclick="window.location.href='index.html'" style="cursor:pointer">☕ CoffeeTime</div>
+        
+        <button id="mobile-toggle" class="mobile-toggle" style="display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary);">
+            <span id="open-icon">☰</span>
+            <span id="close-icon" style="display: none;">✕</span>
+        </button>
+
         <ul>
             <li><a href="pages/Menu.html">Menu</a></li>
             <li><a href="pages/Order.html">Order</a></li>
-            <li><a href="pages/Orders_History.html">Orders History</a></li>
-            <li><a href="pages/RateUs.html">Rate us</a></li>
+            <li><a href="pages/Orders_History.html">History</a></li>
+            <li><a href="pages/RateUs.html">Rate Us</a></li>
         </ul>
     </nav>
 
@@ -27,12 +30,10 @@
         <img src="assets/coffee_2.jpg" alt="Coffee Banner" id="banner-img">
     </div>
 
-    <div id="title">
+    <div id="title" class="animate">
         <img src="assets/logo.png" alt="main_logo" id="title-img">
-        <div id="title-text">
-            <h1>Coffee time</h1>
-            <h2>(Want some?)</h2>
-        </div>
+        <h1>Coffee time</h1>
+        <h2>Explore the authentic aromas of Brasov</h2>
     </div>
 
     <div id="story">
@@ -59,18 +60,23 @@
             Whether you crave something strong, smooth, or a little sweet, there’s always a new flavor waiting to be
             discovered.
         </p>
-        <p class="story-text" id="check">
-            Check out our menu from the top bar to see our beloved products! ⬆️ <br>
-            Enjoy! ❤️
-        </p>
     </div>
+
+    <!-- Recent Reviews Section -->
+    <section class="reviews-section">
+        <h3 class="auxiliarySitesTitles" style="padding-left: 5%;">Recent Reviews</h3>
+        <div id="recentRatings" class="reviews-container">
+            <p style="padding-left: 5%; color: var(--text-secondary);">Loading premium reviews...</p>
+        </div>
+        <div style="text-align: center; margin-top: 3rem;">
+            <button class="base_button" data-target="pages/RateUs.html">Leave a review</button>
+        </div>
+    </section>
 
     <p id="goodVibes">
         Our message for you (click & hold here)
     </p>
 
-    <button class="base_button" data-target="pages/Menu.html">Menu</button>
-    <button class="base_button" data-target="pages/Order.html">Order</button>
 
     <div id="footer-placeholder"></div>
     <script src="functionalities/Shop_Functionalities.js"></script>

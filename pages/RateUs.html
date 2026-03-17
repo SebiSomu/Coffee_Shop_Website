@@ -9,51 +9,51 @@
 </head>
 
 <body class="rateus-page">
+    <nav id="topNav">
+        <div class="logo" onclick="window.location.href='../index.html'" style="cursor:pointer">☕ CoffeeTime</div>
+        
+        <button id="mobile-toggle" class="mobile-toggle" style="display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary);">
+            <span id="open-icon">☰</span>
+            <span id="close-icon" style="display: none;">✕</span>
+        </button>
 
-    <div id="rating-section">
-        <h2 class="auxiliarySitesTitles">Rate Your Experience</h2>
+        <ul>
+            <li><a href="Menu.html">Menu</a></li>
+            <li><a href="Order.html">Order</a></li>
+            <li><a href="Orders_History.html">History</a></li>
+            <li><a href="RateUs.html" class="active">Rate Us</a></li>
+        </ul>
+    </nav>
 
-        <div class="rating-box">
-            <div class="rating-coffee-icon">
-                <div class="coffee-cup">☕</div>
-                <div class="steam">
-                    <span class="steam-line"></span>
-                    <span class="steam-line"></span>
-                    <span class="steam-line"></span>
+    <div id="rating-section" class="menu-view">
+        <div style="text-align: center;">
+            <h2 class="auxiliarySitesTitles">Your Feedback</h2>
+        </div>
+
+        <div style="max-width: 600px; margin: 40px auto; background: white; padding: 3rem; border-radius: 32px; box-shadow: var(--shadow); border: 1px solid var(--border)">
+            <div id="starRating" class="star-rating" style="margin-bottom: 1rem;">
+                <span class="star" data-rating="1">★</span>
+                <span class="star" data-rating="2">★</span>
+                <span class="star" data-rating="3">★</span>
+                <span class="star" data-rating="4">★</span>
+                <span class="star" data-rating="5">★</span>
+            </div>
+
+            <p id="ratingText" style="text-align: center; color: var(--primary); font-weight: 700; font-size: 1.2rem; margin-bottom: 2rem;">Click to rate</p>
+
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label for="reviewName">Your Name (Optional)</label>
+                    <input type="text" id="reviewName" placeholder="Enter your name">
                 </div>
-            </div>
-            <p class="rating-subtitle-text">We'd love to hear your thoughts!</p>
 
-            <div class="rating-stars-section">
-                <p class="rating-question">How would you rate us?</p>
-                <div id="starRating" class="rating-stars-container">
-                    <span class="rating-star" data-rating="1">★</span>
-                    <span class="rating-star" data-rating="2">★</span>
-                    <span class="rating-star" data-rating="3">★</span>
-                    <span class="rating-star" data-rating="4">★</span>
-                    <span class="rating-star" data-rating="5">★</span>
+                <div class="form-group">
+                    <label for="reviewText">Your Review (Optional)</label>
+                    <textarea id="reviewText" rows="5" placeholder="Tell us about your experience..." style="width: 100%; padding: 1rem; border-radius: 12px; border: 1px solid var(--border); font-family: inherit; font-size: 1rem;"></textarea>
                 </div>
-                <p id="ratingText" class="rating-feedback-text">Click to rate</p>
-            </div>
 
-            <div class="rating-form-section">
-                <form id="reviewForm">
-                    <div class="rating-form-group">
-                        <label for="reviewName">Your Name (Optional)</label>
-                        <input type="text" id="reviewName" placeholder="Enter your name">
-                    </div>
-
-                    <div class="rating-form-group">
-                        <label for="reviewText">Your Review (Optional)</label>
-                        <textarea id="reviewText" rows="5" placeholder="Tell us about your experience..."></textarea>
-                    </div>
-
-                    <div class="rating-form-buttons">
-                        <button type="submit" id="submitReview" class="base_button" disabled>Submit Rating</button>
-                        <button type="button" class="base_button" data-target="../index.html">Back to Home</button>
-                    </div>
-                </form>
-            </div>
+                <button type="submit" id="submitReview" class="add-to-cart" disabled style="background: var(--primary); color: white; margin-top: 1rem;">Submit My Review</button>
+            </form>
         </div>
 
         <div class="rating-reviews-display">

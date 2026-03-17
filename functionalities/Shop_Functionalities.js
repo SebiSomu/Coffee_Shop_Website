@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    // Check for local file protocol (CORS issues)
+    if (window.location.protocol === 'file:') {
+        const corsWarning = document.createElement('div');
+        corsWarning.style.cssText = 'position:fixed; top:0; left:0; width:100%; background:#ff4444; color:white; text-align:center; padding:10px; z-index:9999; font-weight:bold; font-family:sans-serif;';
+        corsWarning.innerHTML = '⚠️ CORS Error: Please open this site via http://localhost/ (XAMPP) instead of opening the file directly.';
+        document.body.prepend(corsWarning);
+    }
+
     const isRoot = window.location.pathname.endsWith("index.html") || window.location.pathname.endsWith("/") || !window.location.pathname.includes(".html");
     const base = isRoot ? "" : "../";
 
@@ -21,9 +29,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         alertBox.classList.add("custom-alert");
         alertBox.textContent = message;
         document.body.appendChild(alertBox);
-        setTimeout(() => alertBox.classList.add("visible"), 10);
+        setTimeout(() => alertBox.classList.add("show"), 10);
         setTimeout(() => {
-            alertBox.classList.remove("visible");
+            alertBox.classList.remove("show");
             setTimeout(() => alertBox.remove(), 400);
         }, 3000);
     }
@@ -31,6 +39,45 @@ document.addEventListener("DOMContentLoaded", async function () {
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const cartChannel = new BroadcastChannel("cart_channel");
     const ordersChannel = new BroadcastChannel("orders_channel");
+
+    function getCartCount() {
+        return cart.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
+    }
+
+    function updateNavCartCount() {
+        const orderLinks = document.querySelectorAll('#topNav a[href*="Order.html"]');
+        if (!orderLinks || orderLinks.length === 0) return;
+        const count = getCartCount();
+        orderLinks.forEach(link => {
+            const isActive = link.classList.contains('active');
+            link.textContent = `Order (${count})`;
+            if (isActive) link.classList.add('active');
+        });
+    }
+    updateNavCartCount();
+
+    // Navigation Mobile Toggle
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const navMenu = document.querySelector('#topNav ul');
+    const openIcon = document.getElementById('open-icon');
+    const closeIcon = document.getElementById('close-icon');
+
+    if (mobileToggle && navMenu) {
+        mobileToggle.addEventListener('click', () => {
+            const isOpen = navMenu.classList.toggle('mobile-open');
+            openIcon.style.display = isOpen ? 'none' : 'block';
+            closeIcon.style.display = isOpen ? 'block' : 'none';
+        });
+
+        // Close menu on link click
+        navMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('mobile-open');
+                openIcon.style.display = 'block';
+                closeIcon.style.display = 'none';
+            });
+        });
+    }
 
     document.querySelectorAll("button[data-target]").forEach(button => {
         button.addEventListener("click", () => {
@@ -78,6 +125,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             localStorage.setItem("cart", JSON.stringify(cart));
+            updateNavCartCount();
             cartChannel.postMessage(cart);
             coffeeItem.querySelector(".quantity").textContent = "1";
         });
@@ -92,7 +140,13 @@ document.addEventListener("DOMContentLoaded", async function () {
             const sendOrderBtn = document.getElementById("send-order");
 
             if (cart.length === 0) {
-                cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+                cartItemsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 4rem 0">
+                        <div style="font-size: 4rem; margin-bottom: 1.5rem">🛒</div>
+                        <p style="color: var(--text-secondary); font-size: 1.2rem; font-style: italic; margin-bottom: 2rem">Your cart is empty.</p>
+                        <button class="add-to-cart" data-target="Menu.html" style="max-width: 250px; margin: 0 auto">Go to Menu</button>
+                    </div>
+                `;
                 totalElement.innerText = "";
                 if (sendOrderBtn) {
                     sendOrderBtn.disabled = true;
@@ -170,6 +224,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         renderCart();
         cartChannel.onmessage = (e) => {
             cart = e.data;
+            updateNavCartCount();
             renderCart();
         };
     }
@@ -177,6 +232,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const userFormModal = document.getElementById("userFormModal");
     const userDataForm = document.getElementById("userDataForm");
     const cancelFormBtn = document.getElementById("cancelForm");
+    if (userFormModal) {
+        userFormModal.classList.remove("active");
+    }
 
     function updateSendOrderButton() {
         const sendOrderBtn = document.getElementById("send-order");
@@ -185,6 +243,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
     updateSendOrderButton();
+
+    cartChannel.addEventListener('message', () => {
+        updateSendOrderButton();
+        updateNavCartCount();
+    });
 
     const sendOrderButton = document.getElementById("send-order");
     if (sendOrderButton) {
@@ -204,7 +267,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     if (cancelFormBtn) {
         cancelFormBtn.addEventListener("click", function () {
-            userFormModal.classList.remove("active");
+            if (userFormModal) userFormModal.classList.remove("active");
         });
     }
 
@@ -470,11 +533,27 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (specialMessage) {
         const initialText = specialMessage.textContent;
         specialMessage.addEventListener("mousedown", () => {
+            specialMessage.classList.add("active");
             specialMessage.textContent = "Take a moment to slow down.\n" +
                 "    Feel the aroma, hear the quiet hum of the café, and let the world pause for a sip.\n" +
                 "    Because at Coffee Time, every cup is a reminder that the little things make life beautiful. ☕✨";
         });
         specialMessage.addEventListener("mouseup", () => {
+            specialMessage.classList.remove("active");
+            specialMessage.textContent = initialText;
+        });
+        specialMessage.addEventListener("mouseleave", () => {
+            specialMessage.classList.remove("active");
+            specialMessage.textContent = initialText;
+        });
+        specialMessage.addEventListener("touchstart", () => {
+            specialMessage.classList.add("active");
+            specialMessage.textContent = "Take a moment to slow down.\n" +
+                "    Feel the aroma, hear the quiet hum of the café, and let the world pause for a sip.\n" +
+                "    Because at Coffee Time, every cup is a reminder that the little things make life beautiful. ☕✨";
+        }, { passive: true });
+        specialMessage.addEventListener("touchend", () => {
+            specialMessage.classList.remove("active");
             specialMessage.textContent = initialText;
         });
         const observer = new IntersectionObserver((entries) => {
@@ -521,7 +600,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     if (starRating) {
-        const stars = starRating.querySelectorAll('.rating-star');
+        const stars = starRating.querySelectorAll('.star');
 
         stars.forEach((star, index) => {
             star.addEventListener('mouseenter', () => {
@@ -632,56 +711,40 @@ document.addEventListener("DOMContentLoaded", async function () {
         async function loadRatingsFromDatabase() {
             try {
                 const response = await fetch(base + 'php-server/get_ratings.php');
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                if (!response.ok) throw new Error("Server error");
 
                 const data = await response.json();
-                console.log('Ratings data:', data);
 
                 if (data.success && data.ratings && data.ratings.length > 0) {
-                    recentRatingsContainer.innerHTML = '';
+                    // Filter for 4+ stars and take latest 5
+                    const premiumRatings = data.ratings
+                        .filter(r => parseInt(r.rating) >= 4)
+                        .slice(0, 5);
 
-                    data.ratings.forEach(rating => {
-                        const ratingDiv = document.createElement('div');
-                        ratingDiv.classList.add('rating-item');
-
-                        let starsHTML = '';
-                        for (let i = 1; i <= 5; i++) {
-                            if (i <= rating.rating) {
-                                starsHTML += '⭐';
-                            } else {
-                                starsHTML += '☆';
-                            }
-                        }
-
-                        const date = new Date(rating.created_at);
-                        const formattedDate = date.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
+                    if (premiumRatings.length > 0) {
+                        recentRatingsContainer.innerHTML = '';
+                        premiumRatings.forEach(rating => {
+                            const card = document.createElement('div');
+                            card.classList.add('review-card');
+                            
+                            let stars = '⭐'.repeat(rating.rating);
+                            
+                            card.innerHTML = `
+                                <span class="stars">${stars}</span>
+                                <span class="name">${rating.customer_name}</span>
+                                <p class="text">"${rating.review_text || 'No comment provided.'}"</p>
+                            `;
+                            recentRatingsContainer.appendChild(card);
                         });
-
-                        ratingDiv.innerHTML = `
-                            <div class="rating-header-info">
-                                <span class="rating-stars-display">${starsHTML}</span>
-                                <span class="rating-date">${formattedDate}</span>
-                            </div>
-                            <div class="rating-name">${rating.customer_name}</div>
-                            ${rating.review_text ? `<div class="rating-review-text">${rating.review_text}</div>` : ''}
-                        `;
-
-                        recentRatingsContainer.appendChild(ratingDiv);
-                    });
+                    } else {
+                        recentRatingsContainer.innerHTML = '<p style="padding-left: 5%;">No 4+ star reviews yet. Be the first!</p>';
+                    }
                 } else {
-                    recentRatingsContainer.innerHTML = '<p class="no-ratings">No reviews yet. Be the first to rate us! ⭐</p>';
+                    recentRatingsContainer.innerHTML = '<p style="padding-left: 5%;">No reviews yet.</p>';
                 }
             } catch (error) {
                 console.error('Error loading ratings:', error);
-                recentRatingsContainer.innerHTML = '<p class="no-ratings">Error loading reviews. Please try again later.</p>';
+                recentRatingsContainer.innerHTML = '<p style="padding-left: 5%;">Could not load reviews.</p>';
             }
         }
 

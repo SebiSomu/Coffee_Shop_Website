@@ -9,8 +9,23 @@
 </head>
 
 <body class="history-page">
+    <nav id="topNav">
+        <div class="logo" onclick="window.location.href='../index.html'" style="cursor:pointer">☕ CoffeeTime</div>
+        
+        <button id="mobile-toggle" class="mobile-toggle" style="display: none; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--primary);">
+            <span id="open-icon">☰</span>
+            <span id="close-icon" style="display: none;">✕</span>
+        </button>
 
-    <div id="order-section">
+        <ul>
+            <li><a href="Menu.html">Menu</a></li>
+            <li><a href="Order.html">Order</a></li>
+            <li><a href="Orders_History.html" class="active">History</a></li>
+            <li><a href="RateUs.html">Rate Us</a></li>
+        </ul>
+    </nav>
+
+    <div id="order-section" class="menu-view">
         <h2 class="auxiliarySitesTitles">Your Orders History</h2>
         <div id="orders-list">
         </div>
