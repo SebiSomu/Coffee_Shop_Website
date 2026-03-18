@@ -10,7 +10,7 @@ Coffee Time is a modern, responsive web application designed for a premium coffe
 *   Live Order History: Users can view their past orders, fetched dynamically from the database.
 *   Real-time Rating System: A 5-star rating system with hover effects and real-time review updates without page refreshes.
 *   Interactive Interface: Custom alerts, intersection observer animations for the "Our Story" section, and smooth micro-interactions.
-*   Responsive Design: A sleek, mobile-friendly interface with consistent branding across all pages.
+*   Responsive Design: A sleek, friendly interface with consistent branding across all pages.
 
 ## Showcase
 
@@ -21,6 +21,7 @@ Coffee Time is a modern, responsive web application designed for a premium coffe
 ![Preview 5](assets/presentitive_image5.png)
 ![Preview 6](assets/presentitive_image6.png)
 ![Preview 7](assets/presentitive_image7.png)
+![Preview 8](assets/presentitive_image8.png)
 
 ## Tech Stack
 
