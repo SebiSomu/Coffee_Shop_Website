@@ -18,6 +18,11 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 80px; /* Space for fixed nav */
+}
+
 body {
     background-color: var(--bg-light);
     color: var(--text-primary);
@@ -66,6 +71,8 @@ body {
     font-size: 1.5rem;
     color: var(--primary);
     font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 4px;
 }
 
 #topNav ul {
@@ -108,6 +115,7 @@ body {
     height: 300px;
     overflow: hidden;
     position: relative;
+    scroll-snap-align: start;
 }
 
 #banner-img {
@@ -127,6 +135,7 @@ body {
     text-align: center;
     position: relative;
     overflow: hidden;
+    scroll-snap-align: start;
 }
 
 #title::before {
@@ -172,6 +181,7 @@ body {
     margin: 0 auto;
     padding: 100px 20px;
     text-align: center;
+    scroll-snap-align: start;
 }
 
 #story h3 {
@@ -229,8 +239,6 @@ body {
 /* Menu Grid */
 .menu-view {
     padding: 120px 5% 60px;
-    max-width: 1100px;
-    margin: 0 auto;
 }
 
 .auxiliarySitesTitles {
@@ -376,6 +384,7 @@ body {
     cursor: pointer;
     transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 1px solid var(--border);
+    scroll-snap-align: start;
 }
 
 #goodVibes.active {
@@ -651,6 +660,7 @@ body {
 .reviews-section {
     padding: 100px 5%;
     background: #fdfaf7;
+    scroll-snap-align: start;
 }
 
 .reviews-container {
@@ -703,7 +713,7 @@ body {
     .auxiliarySitesTitles {
         font-size: 2rem;
     }
-    
+
     .mobile-toggle {
         display: block !important;
     }

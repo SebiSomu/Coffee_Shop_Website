@@ -465,50 +465,45 @@ document.addEventListener("DOMContentLoaded", async function () {
                     if (userOrders.length > 0) {
                         ordersList.innerHTML = `
                             <div class="coffee-welcome">
-                                <div class="welcome-icon">☕</div>
+                                <div style="font-size: 3rem; margin-bottom: 1rem;">☕</div>
                                 <h2 class="welcome-greeting">Welcome back, ${currentUser.name}!</h2>
                                 <p class="thank-you-message">Every cup tells a story. Thank you for letting us be a part of yours! ❤️</p>
-                                <p class="welcome-message">Here's your order history:</p>
+                                <div style="display: inline-block; padding: 0.5rem 1.5rem; color: var(--accent); border-radius: 20px; font-weight: 600; font-size: 0.9rem; border: 1px solid var(--accent); margin-top: 0.5rem;">Your Order Journey</div>
                             </div>
+                            <div id="orders-cards" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 800px; margin: 0 auto;"></div>
                         `;
 
-                        userOrders.forEach((order) => {
-                            const orderDiv = document.createElement("div");
-                            orderDiv.classList.add("order-entry");
+                        const cardsContainer = document.getElementById("orders-cards");
+                        userOrders.slice().sort((a, b) => b.id - a.id).forEach((order) => {
+                            let items = [];
+                            try { items = JSON.parse(order.order_data); } catch {}
 
-                            const orderTitle = document.createElement("h3");
-                            orderTitle.textContent = `Order #${order.id} — ${order.order_date}`;
+                            const itemsHTML = items.map(item => `
+                                <div style="display: flex; justify-content: space-between; font-size: 0.95rem; margin-bottom: 0.5rem;">
+                                    <span>${item.name} <span style="color: var(--text-secondary); font-size: 0.8rem;">${item.grams}</span> × ${item.quantity}</span>
+                                    <span style="font-weight: 600;">${item.subtotal} RON</span>
+                                </div>
+                            `).join("");
 
-                            const userInfo = document.createElement("p");
-                            userInfo.classList.add("user-info");
-                            userInfo.textContent = `Ordered by: ${order.customer_name} (${order.phone})`;
-                            userInfo.style.marginTop = "10px";
-
-                            const itemsList = document.createElement("ul");
-
-                            try {
-                                const orderItems = JSON.parse(order.order_data);
-                                orderItems.forEach(item => {
-                                    const li = document.createElement("li");
-                                    li.textContent = `${item.name} ${item.grams} × ${item.quantity} - ${item.subtotal} RON`;
-                                    itemsList.appendChild(li);
-                                });
-                            } catch (e) {
-                                console.error('Error parsing order data:', e);
-                                const li = document.createElement("li");
-                                li.textContent = "Error loading order items";
-                                itemsList.appendChild(li);
-                            }
-
-                            const total = document.createElement("p");
-                            total.classList.add("order-total");
-                            total.textContent = `Total: ${order.total_amount} RON`;
-
-                            orderDiv.appendChild(orderTitle);
-                            orderDiv.appendChild(userInfo);
-                            orderDiv.appendChild(itemsList);
-                            orderDiv.appendChild(total);
-                            ordersList.appendChild(orderDiv);
+                            const card = document.createElement("div");
+                            card.style.cssText = "background: white; padding: 2rem; border-radius: 24px; box-shadow: var(--shadow); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 1rem;";
+                            card.innerHTML = `
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                    <div>
+                                        <h3 style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--primary);">Order #${order.id}</h3>
+                                        <p style="font-size: 0.85rem; color: var(--text-secondary);">${order.order_date}</p>
+                                    </div>
+                                    <span style="padding: 0.4rem 0.8rem; background: #dcfce7; color: #166534; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Completed</span>
+                                </div>
+                                <div style="border-top: 1px dashed var(--border); border-bottom: 1px dashed var(--border); padding: 1rem 0;">
+                                    ${itemsHTML}
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="font-weight: 600; color: var(--text-secondary);">Total Paid</span>
+                                    <span style="font-size: 1.2rem; font-weight: 700; color: var(--primary);">${order.total_amount} RON</span>
+                                </div>
+                            `;
+                            cardsContainer.appendChild(card);
                         });
                     } else {
                         ordersList.innerHTML = `
@@ -726,9 +721,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                         premiumRatings.forEach(rating => {
                             const card = document.createElement('div');
                             card.classList.add('review-card');
-                            
+
                             let stars = '⭐'.repeat(rating.rating);
-                            
+
                             card.innerHTML = `
                                 <span class="stars">${stars}</span>
                                 <span class="name">${rating.customer_name}</span>
